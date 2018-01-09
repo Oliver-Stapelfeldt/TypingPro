@@ -148,7 +148,7 @@ public class FileManager {
 			if (!Files.exists(exc))
 				Files.createFile(exc);
 			FileWriter fw = new FileWriter(exc.toString());
-			@SuppressWarnings("resource")
+		
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(extext);
 			pw.close();
