@@ -37,7 +37,7 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
-			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons;
+			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel;
 
 	Infolabel infolabel;
 
@@ -550,14 +550,20 @@ public class Frame extends JFrame {
 		textexdialog.setSize(300,300);
 		textexdialog.setBackground(background2);
 		
+		exlistpanel = new JPanel();
+		exlistpanel.setBackground(background2);
+		exlistpanel.setBorder(border);
+		textexdialog.add(exlistpanel, BorderLayout.CENTER);
+		
 		exlistbuttons = new JPanel();
-		exlistbuttons.setBackground(background2);
+		exlistbuttons.setBackground(background4);
 		exlistbuttons.setBorder(border);
 		textexdialog.add(exlistbuttons, BorderLayout.SOUTH);
 		
 		loadex = new JButton();
 		languagem.registerComponent(loadex, "loadex");
 		loadex.setFont(bfont2);
+		loadex.setBackground(background2);
 //		loadex.addActionListener(e -> {
 //			usingtypopool = false;
 //			keymanager.stoptimer();
@@ -570,17 +576,18 @@ public class Frame extends JFrame {
 		cancelex = new JButton();
 		languagem.registerComponent(cancelex, "cancelex");
 		cancelex.setFont(bfont2);
+		cancelex.setBackground(background2);
 		cancelex.addActionListener(e -> textexdialog.setVisible(false));
 		exlistbuttons.add(cancelex);
 		
 		list = new JList<>(filemanager.readFilenames());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setBorder(border);
 		list.setBackground(background2);
 		list.setFont(listfont);
+		list.setOpaque(true);
 		
 		exscroll = new JScrollPane(list);
-		textexdialog.add(exscroll, BorderLayout.CENTER);
+		//.add(exscroll);
 		
 
 		// TestButton
