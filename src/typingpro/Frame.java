@@ -6,11 +6,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -20,6 +22,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 
 /**
@@ -34,14 +37,14 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
-			radio, timepanel, speedpanel, typopanel, keypanel;
+			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons;
 
 	Infolabel infolabel;
 
 	JLabel typolabel, textlabel, blink, timelabel, time, keysleftlabel, keysleft, typoslabel, typos, speedlabel, speed,
 			speedunit;
 
-	JButton viewtypos, resettypos, newtypo, refresh, quit;
+	JButton viewtypos, resettypos, newtypo, refresh, quit, loadex, cancelex;
 
 	JMenuBar bar;
 
@@ -59,7 +62,7 @@ public class Frame extends JFrame {
 
 	JTextArea area;
 
-	JScrollPane scroll;
+	JScrollPane scroll, exscroll;
 
 	JComboBox<String> lengthbox, languagebox;
 
@@ -70,6 +73,8 @@ public class Frame extends JFrame {
 	TextManager textmanager;
 
 	boolean usingtypopool;
+	
+	JList<String> list;
 
 	// Konstruktor
 
@@ -164,7 +169,6 @@ public class Frame extends JFrame {
 		FileManager filemanager = new FileManager(this);
 		FileManager.Windowcloser closer = filemanager.windowcloser;
 		addWindowListener(closer);
-		filemanager.showFilelist();
 
 		languagem = new LanguageManager(this);
 		languagem.registerComponent(Typo.called, "called");
@@ -214,13 +218,14 @@ public class Frame extends JFrame {
 		loadexitem = new JMenuItem();
 		languagem.registerComponent(loadexitem, "loadexitem");
 		loadexitem.setBackground(menucolor);
+		loadexitem.addActionListener(e -> {list.setListData(filemanager.readFilenames());textexdialog.setVisible(true);});
 		loadexitem.setBorder(menuborder);
 		textexmenu.add(loadexitem);
 		importexitem = new JMenuItem();
 		languagem.registerComponent(importexitem, "importexitem");
 		importexitem.setBackground(menucolor);
 		importexitem.setBorder(menuborder);
-		importexitem.addActionListener(e -> filemanager.readFile());
+		importexitem.addActionListener(e -> filemanager.chooseFile());
 		textexmenu.add(importexitem);
 		typomenu = new JMenu();
 		languagem.registerComponent(typomenu, "typomenu");
@@ -538,13 +543,44 @@ public class Frame extends JFrame {
 		
 		// Dialog für die Auswahl der Textübungen wird erstellt und eingerichtet
 		
+		Font bfont2 =new Font("Arial", Font.BOLD, 15);
+		Font listfont =new Font("Arial", Font.BOLD, 15);
 		textexdialog = new JDialog();
+		textexdialog.setLocationRelativeTo(null);
+		textexdialog.setSize(300,300);
+		textexdialog.setBackground(background2);
 		
+		exlistbuttons = new JPanel();
+		exlistbuttons.setBackground(background2);
+		exlistbuttons.setBorder(border);
+		textexdialog.add(exlistbuttons, BorderLayout.SOUTH);
 		
+		loadex = new JButton();
+		languagem.registerComponent(loadex, "loadex");
+		loadex.setFont(bfont2);
+//		loadex.addActionListener(e -> {
+//			usingtypopool = false;
+//			keymanager.stoptimer();
+//			textlabel.setText(textmanager.);
+//			keymanager.textlength = textmanager.text.length();
+//			typolabel.setVisible(false);
+//		});
+		exlistbuttons.add(loadex);
 		
+		cancelex = new JButton();
+		languagem.registerComponent(cancelex, "cancelex");
+		cancelex.setFont(bfont2);
+		cancelex.addActionListener(e -> textexdialog.setVisible(false));
+		exlistbuttons.add(cancelex);
 		
+		list = new JList<>(filemanager.readFilenames());
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setBorder(border);
+		list.setBackground(background2);
+		list.setFont(listfont);
 		
-		
+		exscroll = new JScrollPane(list);
+		textexdialog.add(exscroll, BorderLayout.CENTER);
 		
 
 		// TestButton
@@ -554,20 +590,6 @@ public class Frame extends JFrame {
 //		 test.addActionListener(e-> filemanager.readFilenames());
 //		 test.setFocusable(false);
 //		 buttonpanel.add(test);
-		
-//String[] auswahl = {"asd","asdasd"};
-//		
-//		JList list = new JList(auswahl);
-//		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		panel.add(list);
-//		frame.add(panel);
-//		frame.setVisible(true);
-		
-		
-		 
-		 
-		 
-		 
 		filemanager.loadConfig();
 		languagem.setlang();
 		setVisible(true);

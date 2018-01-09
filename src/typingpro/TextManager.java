@@ -134,19 +134,35 @@ public class TextManager {
 			}
 			
 			// Da diese Methode beim Starten einer Übung ausgeführt wird, werden hier sämtliche Variablen und Labels zurückgesetzt.
-			
-			Typo.typos = 0;
-			start = true;
-			frame.progress.setValue(0);
-			frame.infolabel.setText(" ");
-			frame.typos.setText("0");
-			frame.time.setText("0 s");
-			frame.keysleft.setText(""+textbuilder.length());
-			frame.speed.setText("");
+			text = textbuilder;
+			resetFrame();
 		}
-		text = textbuilder;
 		return textbuilder.toString();
 		
 	}
+	
+	public void setExtext(String str) {
+	text = new StringBuilder(str);
+	
+	resetFrame();
+	
+	}
+	
+	
+	public void resetFrame(){
+		Typo.typos = 0;
+		start = true;
+		frame.progress.setValue(0);
+		frame.infolabel.setText(" ");
+		frame.typos.setText("0");
+		frame.time.setText("0 s");
+		frame.keysleft.setText(""+text.length());
+		frame.speed.setText("");
+		
+	}
+	
+	
+	
+	
 
 }

@@ -106,37 +106,34 @@ public class FileManager {
 
 	}
 
-	public void readFile() {
+	public void chooseFile() {
 		
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("TEXT FILES", "txt");
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileFilter(filter);
 		int returnVal = chooser.showDialog(null, "import");
 		File file = chooser.getSelectedFile();
-		
-		StringBuilder builder = new StringBuilder();
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			readTextfile(file);
+			frame.importdialog.setVisible(true);}
+	}
 	
+	
+	
+	public String readTextfile(File file) {
+		StringBuilder builder = new StringBuilder();
 		try {
-
-			if (returnVal == JFileChooser.APPROVE_OPTION && file.getName().endsWith(".txt")) {
+			if (file.getName().endsWith(".txt")) {
 				FileReader fr = new FileReader(file);
-
 				BufferedReader br = new BufferedReader(fr);
-
 				String temp;
-
-				while ((temp = br.readLine()) != null) {
+				while ((temp = br.readLine()) != null)
 					builder.append(temp);
-				}
 				br.close();
-				frame.importdialog.setVisible(true);
 				extext = builder.toString();
-
 			}
-		} catch (IOException e) {
-
-		}
-
+		} catch (IOException e) {}
+		return builder.toString();
 	}
 
 	public void importFile(String userentry) {
@@ -148,7 +145,6 @@ public class FileManager {
 			if (!Files.exists(exc))
 				Files.createFile(exc);
 			FileWriter fw = new FileWriter(exc.toString());
-		
 			PrintWriter pw = new PrintWriter(fw);
 			pw.print(extext);
 			pw.close();
@@ -169,17 +165,10 @@ public class FileManager {
 		for (int i = 0; i < files.length; i++) {
 			int pos =  files[i].getName().lastIndexOf(".");
 			filenames[i] = files[i].getName().substring(0, pos);
-		}
-		return filenames;
+		}	
+			return filenames;
 	}
 	
-	public void showFilelist() {
-		String[] filenames = readFilenames();
-		for(String filename : filenames)
-			System.out.println(filename);
-		
-		
-	}
 	
 
 	class Windowcloser extends WindowAdapter {
