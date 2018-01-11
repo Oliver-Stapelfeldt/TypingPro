@@ -70,6 +70,8 @@ public class LanguageManager {
 			else if(entry.getValue() instanceof JMenuItem)
 				((JMenuItem) entry.getValue()).setText(bundle.getString(entry.getKey()));
 			
+			
+			
 			if(Typo.typolist.size()<1) {
 				frame.area.setText(Typo.emptytypolist.getText());
 				}
@@ -78,7 +80,9 @@ public class LanguageManager {
 			}
 			
 			frame.typodialog.setTitle(Typo.dialogtitle.getText());
+			frame.textexdialog.setTitle(frame.exdiatitle.getText());
 			frame.infolabel.setInfotext(frame.infolabel.reminder);
+			
 		}
 	}
 	

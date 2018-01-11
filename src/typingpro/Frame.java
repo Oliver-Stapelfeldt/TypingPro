@@ -37,20 +37,21 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
-			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel;
+			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel, exlistnorthpanel, namemainpanel, namenorthpanel,
+			namebuttonpanel;
 
 	Infolabel infolabel;
 
 	JLabel typolabel, textlabel, blink, timelabel, time, keysleftlabel, keysleft, typoslabel, typos, speedlabel, speed,
-			speedunit;
+			speedunit, exdiatitle, exdialabel;
 
-	JButton viewtypos, resettypos, newtypo, refresh, quit, loadex, cancelex;
+	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex;
 
 	JMenuBar bar;
 
 	JMenu filemenu, textexmenu, typomenu;
 
-	JMenuItem newitem, quititem, loadexitem, importexitem, typoexitem, typoviewitem, typoclearitem;
+	JMenuItem randomitem, quititem, loadexitem, importexitem, typoexitem, typoviewitem, typoclearitem;
 
 	JRadioButton letters, numbers, basicsigns, manysigns, umlauts, uppercases;
 
@@ -72,9 +73,9 @@ public class Frame extends JFrame {
 
 	TextManager textmanager;
 
-	boolean usingtypopool;
-	
 	JList<String> list;
+
+	Using using = Using.RANDOM;
 
 	// Konstruktor
 
@@ -194,20 +195,16 @@ public class Frame extends JFrame {
 
 		languagem.registerComponent(filemenu, "filemenu");
 		bar.add(filemenu);
-		newitem = new JMenuItem();
-		languagem.registerComponent(newitem, "newitem");
-		newitem.setBackground(menucolor);
-		newitem.setBorder(menuborder);
+		randomitem = new JMenuItem();
+		languagem.registerComponent(randomitem, "newitem");
+		randomitem.setBackground(menucolor);
+		randomitem.setBorder(menuborder);
 
-		newitem.addActionListener(e -> {
-			usingtypopool = false;
-			keymanager.stoptimer();
-			textmanager.setRandomlist();
-			textlabel.setText((textmanager.setRandomtext()));
-			keymanager.textlength = textmanager.text.length();
-			typolabel.setVisible(false);
+		randomitem.addActionListener(e -> {
+			using = Using.RANDOM;
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
-		filemenu.add(newitem);
+		filemenu.add(randomitem);
 		textexmenu = new JMenu();
 		languagem.registerComponent(textexmenu, "textexmenu");
 		textexmenu.setOpaque(true);
@@ -218,7 +215,10 @@ public class Frame extends JFrame {
 		loadexitem = new JMenuItem();
 		languagem.registerComponent(loadexitem, "loadexitem");
 		loadexitem.setBackground(menucolor);
-		loadexitem.addActionListener(e -> {list.setListData(filemanager.readFilenames());textexdialog.setVisible(true);});
+		loadexitem.addActionListener(e -> {
+			list.setListData(filemanager.readFilenames());
+			textexdialog.setVisible(true);
+		});
 		loadexitem.setBorder(menuborder);
 		textexmenu.add(loadexitem);
 		importexitem = new JMenuItem();
@@ -239,13 +239,8 @@ public class Frame extends JFrame {
 		typoexitem.setBackground(menucolor);
 		typoexitem.setBorder(menuborder);
 		typoexitem.addActionListener(e -> {
-			keymanager.stoptimer();
-			textmanager.setTypolist();
-			textlabel.setText((textmanager.setRandomtext()));
-			if (textmanager.randomlist.size() > 0)
-				usingtypopool = true;
-			keymanager.textlength = textmanager.text.length();
-			typolabel.setVisible(false);
+			using = Using.TYPOS;
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		typomenu.add(typoexitem);
 		typoviewitem = new JMenuItem();
@@ -259,7 +254,6 @@ public class Frame extends JFrame {
 		typoclearitem.setBackground(menucolor);
 		typoclearitem.setBorder(menuborder);
 		typoclearitem.addActionListener(e -> {
-			usingtypopool = false;
 			Typo.typolist = new ArrayList<>();
 			area.setText(Typo.emptytypolist.getText());
 		});
@@ -325,6 +319,7 @@ public class Frame extends JFrame {
 		lengthbox = new JComboBox<String>(lengthb);
 		languagem.registerComponent(lengthbox, "lengthbox");
 		lengthbox.setFocusable(false);
+		lengthbox.setSelectedIndex(0);
 		topwests.add(lengthbox);
 
 		// TopPanel Center
@@ -376,7 +371,7 @@ public class Frame extends JFrame {
 		languagebox.setFocusable(false);
 		languagebox.setSelectedIndex(0);
 		languagebox.addActionListener(e -> languagem.setlang());
-		topeast.add(languagebox, BorderLayout.EAST);
+		topeast.add(languagebox);
 
 		// InfoPanel
 
@@ -422,22 +417,38 @@ public class Frame extends JFrame {
 		// Buttons werden erstellt und eingerichtet.
 
 		Color buttonforeground = new Color(30, 30, 30);
-
 		Font bfont = new Font("Arial", Font.BOLD, 18);
 		refresh = new JButton();
 		languagem.registerComponent(refresh, "refreshbutton");
 		refresh.setFont(bfont);
 		refresh.addActionListener(e -> {
-			usingtypopool = false;
-			keymanager.stoptimer();
-			textmanager.setRandomlist();
-			textlabel.setText((textmanager.setRandomtext()));
-			keymanager.textlength = textmanager.text.length();
-			typolabel.setVisible(false);
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		refresh.setFocusable(false);
 		refresh.setForeground(buttonforeground);
 		refresh.setBackground(background2);
+
+		newrandomtext = new JButton();
+		languagem.registerComponent(newrandomtext, "newrandomtextbutton");
+		newrandomtext.setFont(bfont);
+		newrandomtext.addActionListener(e -> {
+			using = Using.RANDOM;
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
+		});
+		newrandomtext.setFocusable(false);
+		newrandomtext.setForeground(buttonforeground);
+		newrandomtext.setBackground(background2);
+
+		newtextexcercise = new JButton();
+		languagem.registerComponent(newtextexcercise, "newtextexcercisebutton");
+		newtextexcercise.setFont(bfont);
+		newtextexcercise.addActionListener(e -> {
+			list.setListData(filemanager.readFilenames());
+			textexdialog.setVisible(true);
+		});
+		newtextexcercise.setFocusable(false);
+		newtextexcercise.setForeground(buttonforeground);
+		newtextexcercise.setBackground(background2);
 
 		quit = new JButton();
 		languagem.registerComponent(quit, "quitbutton");
@@ -450,46 +461,21 @@ public class Frame extends JFrame {
 		quit.setForeground(buttonforeground);
 		quit.setBackground(background2);
 
-		resettypos = new JButton();
-		languagem.registerComponent(resettypos, "cleartypobutton");
-		resettypos.setFont(bfont);
-		resettypos.addActionListener(e -> {
-			usingtypopool = false;
-			Typo.typolist = new ArrayList<>();
-			area.setText(Typo.emptytypolist.getText());
-		});
-		resettypos.setFocusable(false);
-		resettypos.setForeground(buttonforeground);
-		resettypos.setBackground(background2);
-
-		viewtypos = new JButton();
-		languagem.registerComponent(viewtypos, "viewtypobutton");
-		viewtypos.setFont(bfont);
-		viewtypos.addActionListener(e -> typodialog.setVisible(true));
-		viewtypos.setFocusable(false);
-		viewtypos.setForeground(buttonforeground);
-		viewtypos.setBackground(background2);
-
 		newtypo = new JButton();
 		languagem.registerComponent(newtypo, "newtypobutton");
 		newtypo.setFont(bfont);
 		newtypo.addActionListener(e -> {
-			keymanager.stoptimer();
-			textmanager.setTypolist();
-			textlabel.setText((textmanager.setRandomtext()));
-			if (textmanager.randomlist.size() > 0)
-				usingtypopool = true;
-			keymanager.textlength = textmanager.text.length();
-			typolabel.setVisible(false);
+			using = Using.TYPOS;
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		newtypo.setFocusable(false);
 		newtypo.setForeground(buttonforeground);
 		newtypo.setBackground(background2);
 
 		buttonpanel.add(refresh);
+		buttonpanel.add(newrandomtext);
 		buttonpanel.add(newtypo);
-		buttonpanel.add(viewtypos);
-		buttonpanel.add(resettypos);
+		buttonpanel.add(newtextexcercise);
 		buttonpanel.add(quit);
 
 		// Dialoge
@@ -507,27 +493,48 @@ public class Frame extends JFrame {
 
 		// Dialog für Imports wird erstellt und eingerichtet
 
+		Font bfont2 = new Font("Arial", Font.BOLD, 15);
+
 		importdialog = new JDialog();
-		JPanel mainpanel = new JPanel();
+		namemainpanel = new JPanel();
 		importdialog.setBounds(400, 400, 300, 200);
-		importdialog.add(mainpanel);
-		mainpanel.setLayout(new BorderLayout());
-		mainpanel.setBackground(background2);
-		mainpanel.setBorder(border);
+		importdialog.add(namemainpanel);
+		namemainpanel.setLayout(new BorderLayout());
+		namemainpanel.setBackground(background2);
+		namemainpanel.setBorder(border);
 		JPanel textpanel = new JPanel();
 		textpanel.setBackground(background2);
 		textpanel.setLayout(new GridLayout(3, 1));
-		JLabel label = new JLabel("Enter a name");
-		label.setFont(new Font("Arial Black", Font.PLAIN, 17));
-		label.setText("Enter a name");
-		textpanel.add(label);
-		mainpanel.add(textpanel, BorderLayout.CENTER);
-		JPanel dialogbuttonpanel = new JPanel();
-		dialogbuttonpanel.setBackground(background4);
-		mainpanel.add(dialogbuttonpanel, BorderLayout.SOUTH);
+		
+		
+		JLabel enternamelabel = new JLabel("Enter a name");
+		enternamelabel.setFont(new Font("Arial Black", Font.PLAIN, 17));
+		languagem.registerComponent(enternamelabel, "enternamelabel");
+		namenorthpanel = new JPanel();
+		namenorthpanel.setBackground(background2);
+		textpanel.add(namenorthpanel);
+		namenorthpanel.add(enternamelabel);
+		namemainpanel.add(textpanel, BorderLayout.CENTER);
+		namebuttonpanel = new JPanel();
+		namebuttonpanel.setBackground(background4);
+		namemainpanel.add(namebuttonpanel, BorderLayout.SOUTH);
 		JTextField namefield = new JTextField();
+		namefield.addActionListener(e -> {
+			String exname = namefield.getText().trim();
+			if (exname.length() > 0) {
+				filemanager.importFile(exname);
+				importdialog.setVisible(false);
+				namefield.setText("");
+			}
+		});
+		namefield.setFont(radiof);
 		textpanel.add(namefield, BorderLayout.CENTER);
-		JButton choosename = new JButton("Enter");
+		JButton choosename = new JButton();
+		choosename.setFont(bfont2);
+		choosename.setFocusable(false);
+		choosename.setForeground(buttonforeground);
+		choosename.setBackground(background2);
+		languagem.registerComponent(choosename, "choosenameenter");
 		choosename.addActionListener(e -> {
 			String exname = namefield.getText().trim();
 			if (exname.length() > 0) {
@@ -536,67 +543,81 @@ public class Frame extends JFrame {
 				namefield.setText("");
 			}
 		});
-		dialogbuttonpanel.add(choosename, BorderLayout.SOUTH);
-		JButton cancelname = new JButton("Cancel");
-		cancelname.addActionListener(e -> setVisible(false));
-		dialogbuttonpanel.add(cancelname, BorderLayout.SOUTH);
-		
+		namebuttonpanel.add(choosename, BorderLayout.SOUTH);
+		JButton cancelname = new JButton();
+		cancelname.setFont(bfont2);
+		cancelname.setFocusable(false);
+		cancelname.setForeground(buttonforeground);
+		cancelname.setBackground(background2);
+		languagem.registerComponent(cancelname, "choosenamecancel");
+		cancelname.addActionListener(e -> importdialog.setVisible(false));
+		namebuttonpanel.add(cancelname, BorderLayout.SOUTH);
+
 		// Dialog für die Auswahl der Textübungen wird erstellt und eingerichtet
-		
-		Font bfont2 =new Font("Arial", Font.BOLD, 15);
-		Font listfont =new Font("Arial", Font.BOLD, 15);
+
+		Font listfont = new Font("Arial", Font.BOLD, 15);
 		textexdialog = new JDialog();
 		textexdialog.setLocationRelativeTo(null);
-		textexdialog.setSize(300,300);
+		textexdialog.setSize(300, 300);
 		textexdialog.setBackground(background2);
-		
+
 		exlistpanel = new JPanel();
 		exlistpanel.setBackground(background2);
-		exlistpanel.setBorder(border);
+		exlistpanel.setLayout(new BorderLayout());
 		textexdialog.add(exlistpanel, BorderLayout.CENTER);
-		
+
 		exlistbuttons = new JPanel();
 		exlistbuttons.setBackground(background4);
-		exlistbuttons.setBorder(border);
 		textexdialog.add(exlistbuttons, BorderLayout.SOUTH);
-		
+
+		exdiatitle = new JLabel();
+		languagem.registerComponent(exdiatitle, "loadex2");
+
+		exlistnorthpanel = new JPanel();
+		exlistnorthpanel.setBackground(background2);
+		exlistpanel.setBorder(border);
+		exlistpanel.add(exlistnorthpanel, BorderLayout.NORTH);
+
+		exdialabel = new JLabel();
+		languagem.registerComponent(exdialabel, "exdialabel");
+		exdialabel.setFont(labelfont);
+		exlistnorthpanel.add(exdialabel);
+
 		loadex = new JButton();
 		languagem.registerComponent(loadex, "loadex");
 		loadex.setFont(bfont2);
 		loadex.setBackground(background2);
-//		loadex.addActionListener(e -> {
-//			usingtypopool = false;
-//			keymanager.stoptimer();
-//			textlabel.setText(textmanager.);
-//			keymanager.textlength = textmanager.text.length();
-//			typolabel.setVisible(false);
-//		});
+		loadex.addActionListener(e -> {
+			using = Using.TEXT;
+			textmanager.textexcercise = filemanager.readTextfilefromname(list.getSelectedValue());
+			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
+			textexdialog.setVisible(false);
+		});
 		exlistbuttons.add(loadex);
-		
+
 		cancelex = new JButton();
 		languagem.registerComponent(cancelex, "cancelex");
 		cancelex.setFont(bfont2);
 		cancelex.setBackground(background2);
 		cancelex.addActionListener(e -> textexdialog.setVisible(false));
 		exlistbuttons.add(cancelex);
-		
+
 		list = new JList<>(filemanager.readFilenames());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setBackground(background2);
+		list.setBackground(background);
 		list.setFont(listfont);
-		list.setOpaque(true);
-		
+
 		exscroll = new JScrollPane(list);
-		//.add(exscroll);
-		
+		exlistpanel.add(exscroll, BorderLayout.CENTER);
 
 		// TestButton
 
-//		 JButton test = new JButton();
-//		 test.setText("test");
-//		 test.addActionListener(e-> filemanager.readFilenames());
-//		 test.setFocusable(false);
-//		 buttonpanel.add(test);
+		// JButton test = new JButton();
+		// test.setText("test");
+		// test.addActionListener(e-> filemanager.readFilenames());
+		// test.setFocusable(false);
+		// buttonpanel.add(test);
+
 		filemanager.loadConfig();
 		languagem.setlang();
 		setVisible(true);
@@ -648,6 +669,46 @@ public class Frame extends JFrame {
 			reminder = label;
 			setText(label.getText());
 		}
+	}
+
+	public enum Using {
+		RANDOM {
+			@Override
+			public void prepareExcercise(TextManager textmanager, KeyManager keymanager, JLabel textlabel,
+					JLabel typolabel) {
+				keymanager.stoptimer();
+				textmanager.setRandomlist();
+				textlabel.setText((textmanager.setRandomtext()));
+				keymanager.textlength = textmanager.text.length();
+				typolabel.setVisible(false);
+			}
+		},
+		TYPOS {
+			@Override
+			public void prepareExcercise(TextManager textmanager, KeyManager keymanager, JLabel textlabel,
+					JLabel typolabel) {
+				keymanager.stoptimer();
+				textmanager.setTypolist();
+				textlabel.setText((textmanager.setRandomtext()));
+				keymanager.textlength = textmanager.text.length();
+				typolabel.setVisible(false);
+			}
+		},
+		TEXT {
+			@Override
+			public void prepareExcercise(TextManager textmanager, KeyManager keymanager, JLabel textlabel,
+					JLabel typolabel) {
+				keymanager.stoptimer();
+				textmanager.text = new StringBuilder(textmanager.textexcercise);
+				textlabel.setText(textmanager.text.toString());
+				textmanager.resetComp();
+				keymanager.textlength = textmanager.text.length();
+				typolabel.setVisible(false);
+
+			}
+		};
+		public abstract void prepareExcercise(TextManager textmanager, KeyManager keymanager, JLabel textlabel,
+				JLabel typolabel);
 	}
 
 	public static void main(String[] args) {

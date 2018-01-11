@@ -135,6 +135,27 @@ public class FileManager {
 		} catch (IOException e) {}
 		return builder.toString();
 	}
+	
+	public String readTextfilefromname(String name) {
+		StringBuilder builder = new StringBuilder();
+		File file = new File(expath+"/"+name+".txt");
+		try {
+			if (file.getName().endsWith(".txt")) {
+				FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(fr);
+				String temp;
+				while ((temp = br.readLine()) != null)
+					builder.append(temp);
+				br.close();
+				extext = builder.toString();
+			}
+		} catch (IOException e) {}
+		return builder.toString();
+	}
+	
+	
+	
+	
 
 	public void importFile(String userentry) {
 		try {

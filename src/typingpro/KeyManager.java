@@ -15,7 +15,7 @@ public class KeyManager implements KeyListener {
 	// Attribute
 
 	Frame frame;
-	TextManager randomtext;
+	TextManager textmanager;
 	Timer timer;
 	int textlength;
 	long startingtime;
@@ -26,7 +26,7 @@ public class KeyManager implements KeyListener {
 
 	KeyManager(Frame frame, TextManager randomtext) {
 		this.frame = frame;
-		this.randomtext = randomtext;
+		this.textmanager = randomtext;
 	}
 
 	@Override
@@ -48,12 +48,12 @@ public class KeyManager implements KeyListener {
 		// Ist eine neue Übung erfolgreich gestartet worden und der Text gesetzt, so wird der Thread Timer gestartet und eine Startzeit
 		// zur Berechnung der Geschwindigkeit bestimmt.
 
-		if (randomtext.start == true && randomtext.text.length() > 0) {
-			randomtext.start = false;
-			timer = new Timer(frame, randomtext);
+		if (textmanager.start == true && textmanager.text.length() > 0) {
+			textmanager.start = false;
+			timer = new Timer(frame, textmanager);
 			timer.start();
 			startingtime = System.currentTimeMillis();
-			if (k.getKeyChar() != randomtext.text.charAt(0)) {
+			if (k.getKeyChar() != textmanager.text.charAt(0)) {
 				firstwrong = true;
 			}
 		}
@@ -61,35 +61,31 @@ public class KeyManager implements KeyListener {
 		// Wird eine Übung abgeschlossen, so wird mit dem nächsten Tastendruck eine Neue erzeugt. Hierbei wird mit einem boolean überprüft, ob zuletzt die Fehlerliste
 		// oder eine normale Übung verwendet wurde. Die Textlänge wird zur Ausgabe der Geschwindigkeit gespeichert.
 
-		if (randomtext.text.length() < 1) {
-			if (frame.usingtypopool == true) {
-				randomtext.setTypolist();
-			} else {
-				randomtext.setRandomlist();
-			}
+		if (textmanager.text.length() < 1) {
+			frame.using.prepareExcercise(textmanager, this, frame.textlabel, frame.typolabel);
 			frame.speedunit.setVisible(false);
-			frame.textlabel.setText((randomtext.setRandomtext()));
-			textlength = randomtext.text.length();
+			
+			
 		}
 		
 		// Wird während der Übung eine Taste korrekt gedrückt, so wird der erste Buchstabe entfernt. Die Geschwindigkeit wird berechnet und sämtliche Labels aktualisiert.
 		// Falls nach der Entfernung des ersten Buchstabens, die Übung abgeschlossen ist, wird der Timer gestoppt. Die Berechnung der Geschwindigkeit soll erst ab dem
 		// 2. Tastendruck erfolgen (der 1. Tastendruck startet den Timer). Hierfür wird der Boolean firstwrong verwendet.
 
-		else if (k.getKeyChar() == randomtext.text.charAt(0)) {
+		else if (k.getKeyChar() == textmanager.text.charAt(0)) {
 			deletefirst();
-			frame.progress.setValue((int) (((double) (textlength - randomtext.text.length()) / textlength) * 100));
-			frame.keysleft.setText(""+randomtext.text.length());
+			frame.progress.setValue((int) (((double) (textlength - textmanager.text.length()) / textlength) * 100));
+			frame.keysleft.setText(""+textmanager.text.length());
 
-			if (textlength - randomtext.text.length() > 1 || firstwrong) {
+			if (textlength - textmanager.text.length() > 1 || firstwrong) {
 				firstwrong = false;
-				double avg = (double) ((textlength - randomtext.text.length())
+				double avg = (double) ((textlength - textmanager.text.length())
 						/ ((double) (System.currentTimeMillis() - startingtime) / 1000));
 				frame.speed.setText(String.format("%.2f", avg));
 				frame.speedunit.setVisible(true);
 			}
 
-			if (randomtext.text.length() < 1) {
+			if (textmanager.text.length() < 1) {
 				frame.infolabel.setInfotext(frame.infolabel.anykeytorestart);
 				frame.typolabel.setVisible(false);
 				stoptimer();
@@ -100,7 +96,7 @@ public class KeyManager implements KeyListener {
 			// Wird während der Übung eine Taste falsch gedrückt, so wird auch hier die Geschwindigkeit berechnet.
 			// Wurde die erste Taste falsch gedrückt, so wird bei dem nächsten Tastendruck die Geschwindigkeit NaN ausgegeben. Dies wird mit einer Abfrage auf firstwrong korrigiert.
 			// Sämtliche Labels werden aktualisiert und eine Thread wird ausgeführt, um die Schrift kurzzeitig rot zu färben.
-			double avg = (double) ((textlength - randomtext.text.length())
+			double avg = (double) ((textlength - textmanager.text.length())
 					/ ((double) (System.currentTimeMillis() - startingtime) / 1000));
 			frame.speed.setText(String.format("%.2f", avg));
 			frame.speedunit.setVisible(true);
@@ -109,11 +105,11 @@ public class KeyManager implements KeyListener {
 			}
 			
 			
-			Typo.add(new Typo(frame, randomtext.text.charAt(0), k.getKeyChar()));
+			Typo.add(new Typo(frame, textmanager.text.charAt(0), k.getKeyChar()));
 			frame.area.setText(Typo.printtypos());
 			frame.typos.setText(""+Typo.typos);
 			frame.infolabel.setInfotext(frame.infolabel.typoadded);
-			frame.typolabel.setText("\""+randomtext.text.charAt(0)+"\"");
+			frame.typolabel.setText("\""+ textmanager.text.charAt(0)+"\"");
 			frame.typolabel.setVisible(true);
 			new Thread() {
 				public void run() {
@@ -126,8 +122,8 @@ public class KeyManager implements KeyListener {
 	 * Entfernt das erste Element des zufälligen Textes in der Klasse Randomtext und aktuallisiert das zugehörende Label
 	 */
 	public void deletefirst() {
-		randomtext.text.deleteCharAt(0);
-		frame.textlabel.setText(randomtext.text.toString());
+		textmanager.text.deleteCharAt(0);
+		frame.textlabel.setText(textmanager.text.toString());
 	}
 	
 	/**

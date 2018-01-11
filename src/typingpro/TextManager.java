@@ -18,6 +18,8 @@ public class TextManager {
 	Frame frame;
 
 	StringBuilder text = new StringBuilder();
+	
+	String textexcercise;
 
 	List<Character> randomlist = new ArrayList<Character>();
 
@@ -100,6 +102,7 @@ public class TextManager {
 		
 		if (randomlist.size() < 1)
 			frame.infolabel.setInfotext(frame.infolabel.typopoolempty);
+			text = new StringBuilder();
 	}
 
 	/**
@@ -135,21 +138,15 @@ public class TextManager {
 			
 			// Da diese Methode beim Starten einer Übung ausgeführt wird, werden hier sämtliche Variablen und Labels zurückgesetzt.
 			text = textbuilder;
-			resetFrame();
+			resetComp();
 		}
 		return textbuilder.toString();
-		
-	}
-	
-	public void setExtext(String str) {
-	text = new StringBuilder(str);
-	
-	resetFrame();
-	
 	}
 	
 	
-	public void resetFrame(){
+	
+	
+	public void resetComp(){
 		Typo.typos = 0;
 		start = true;
 		frame.progress.setValue(0);
