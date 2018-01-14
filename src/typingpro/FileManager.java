@@ -193,6 +193,8 @@ public class FileManager {
 
 	public String[] readFilenames() {
 		try {
+			if (!Files.isDirectory(datapath))
+				Files.createDirectory(datapath);	
 			if (!Files.isDirectory(expath))
 				Files.createDirectory(expath);
 		} catch (Exception e) {

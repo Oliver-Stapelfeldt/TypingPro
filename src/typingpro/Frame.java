@@ -615,7 +615,7 @@ public class Frame extends JFrame {
 		cancelex.addActionListener(e -> textexdialog.setVisible(false));
 		exlistbuttons.add(cancelex);
 
-		list = new JList<>(filemanager.readFilenames());
+		list = new JList<>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.setBackground(background);
 		list.setFont(listfont);
