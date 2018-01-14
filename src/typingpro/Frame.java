@@ -37,15 +37,15 @@ public class Frame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
-			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel, exlistnorthpanel, namemainpanel, namenorthpanel,
-			namebuttonpanel;
+			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel, exlistnorthpanel,
+			namemainpanel, namenorthpanel, namebuttonpanel;
 
 	Infolabel infolabel;
 
 	JLabel typolabel, textlabel, blink, timelabel, time, keysleftlabel, keysleft, typoslabel, typos, speedlabel, speed,
 			speedunit, exdiatitle, exdialabel;
 
-	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex;
+	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex, deleteex;
 
 	JMenuBar bar;
 
@@ -205,28 +205,7 @@ public class Frame extends JFrame {
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		filemenu.add(randomitem);
-		textexmenu = new JMenu();
-		languagem.registerComponent(textexmenu, "textexmenu");
-		textexmenu.setOpaque(true);
-		textexmenu.setBackground(menucolor);
-		textexmenu.getPopupMenu().setBorder(null);
-		textexmenu.setBorder(menuborder);
-		filemenu.add(textexmenu);
-		loadexitem = new JMenuItem();
-		languagem.registerComponent(loadexitem, "loadexitem");
-		loadexitem.setBackground(menucolor);
-		loadexitem.addActionListener(e -> {
-			list.setListData(filemanager.readFilenames());
-			textexdialog.setVisible(true);
-		});
-		loadexitem.setBorder(menuborder);
-		textexmenu.add(loadexitem);
-		importexitem = new JMenuItem();
-		languagem.registerComponent(importexitem, "importexitem");
-		importexitem.setBackground(menucolor);
-		importexitem.setBorder(menuborder);
-		importexitem.addActionListener(e -> filemanager.chooseFile());
-		textexmenu.add(importexitem);
+		
 		typomenu = new JMenu();
 		languagem.registerComponent(typomenu, "typomenu");
 		typomenu.setOpaque(true);
@@ -259,6 +238,29 @@ public class Frame extends JFrame {
 		});
 		typomenu.add(typoclearitem);
 
+		textexmenu = new JMenu();
+		languagem.registerComponent(textexmenu, "textexmenu");
+		textexmenu.setOpaque(true);
+		textexmenu.setBackground(menucolor);
+		textexmenu.getPopupMenu().setBorder(null);
+		textexmenu.setBorder(menuborder);
+		filemenu.add(textexmenu);
+		loadexitem = new JMenuItem();
+		languagem.registerComponent(loadexitem, "loadexitem");
+		loadexitem.setBackground(menucolor);
+		loadexitem.addActionListener(e -> {
+			list.setListData(filemanager.readFilenames());
+			textexdialog.setVisible(true);
+		});
+		loadexitem.setBorder(menuborder);
+		textexmenu.add(loadexitem);
+		importexitem = new JMenuItem();
+		languagem.registerComponent(importexitem, "importexitem");
+		importexitem.setBackground(menucolor);
+		importexitem.setBorder(menuborder);
+		importexitem.addActionListener(e -> filemanager.chooseFile());
+		textexmenu.add(importexitem);
+		
 		quititem = new JMenuItem();
 		languagem.registerComponent(quititem, "quititem");
 		quititem.setBackground(menucolor);
@@ -505,8 +507,7 @@ public class Frame extends JFrame {
 		JPanel textpanel = new JPanel();
 		textpanel.setBackground(background2);
 		textpanel.setLayout(new GridLayout(3, 1));
-		
-		
+
 		JLabel enternamelabel = new JLabel("Enter a name");
 		enternamelabel.setFont(new Font("Arial Black", Font.PLAIN, 17));
 		languagem.registerComponent(enternamelabel, "enternamelabel");
@@ -558,7 +559,8 @@ public class Frame extends JFrame {
 		Font listfont = new Font("Arial", Font.BOLD, 15);
 		textexdialog = new JDialog();
 		textexdialog.setLocationRelativeTo(null);
-		textexdialog.setSize(300, 300);
+		textexdialog.setSize(350, 300);
+		textexdialog.setMinimumSize(new Dimension(320,300));
 		textexdialog.setBackground(background2);
 
 		exlistpanel = new JPanel();
@@ -594,6 +596,17 @@ public class Frame extends JFrame {
 			textexdialog.setVisible(false);
 		});
 		exlistbuttons.add(loadex);
+
+		deleteex = new JButton();
+		languagem.registerComponent(deleteex, "deleteex");
+		deleteex.setFont(bfont2);
+		deleteex.setBackground(background2);
+		deleteex.addActionListener(e -> {
+			filemanager.deleteTextfilefromname(list.getSelectedValue());
+			list.setListData(filemanager.readFilenames());
+		});
+
+		exlistbuttons.add(deleteex);
 
 		cancelex = new JButton();
 		languagem.registerComponent(cancelex, "cancelex");
@@ -637,6 +650,7 @@ public class Frame extends JFrame {
 		private static final long serialVersionUID = 1L;
 
 		JLabel reminder;
+		JLabel emptylabel;
 		JLabel anykeytostart;
 		JLabel anykeytorestart;
 		JLabel chooseanykeys;
@@ -645,11 +659,13 @@ public class Frame extends JFrame {
 
 		public Infolabel() {
 
+			emptylabel = new JLabel();
 			anykeytostart = new JLabel();
 			anykeytorestart = new JLabel();
 			chooseanykeys = new JLabel();
 			typopoolempty = new JLabel();
 			typoadded = new JLabel();
+			languagem.registerComponent(emptylabel, "emptylabel");
 			languagem.registerComponent(anykeytostart, "anykeytostart");
 			languagem.registerComponent(anykeytorestart, "anykeytorestart");
 			languagem.registerComponent(chooseanykeys, "chooseanykeys");

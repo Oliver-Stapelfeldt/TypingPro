@@ -150,7 +150,7 @@ public class TextManager {
 		Typo.typos = 0;
 		start = true;
 		frame.progress.setValue(0);
-		frame.infolabel.setText(" ");
+		frame.infolabel.setInfotext(frame.infolabel.emptylabel);
 		frame.typos.setText("0");
 		frame.time.setText("0 s");
 		frame.keysleft.setText(""+text.length());

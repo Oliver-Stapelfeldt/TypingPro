@@ -153,6 +153,24 @@ public class FileManager {
 		return builder.toString();
 	}
 	
+	public void deleteTextfilefromname(String name) {
+		
+		Path file2 = expath.toAbsolutePath().resolve(name+".txt").normalize();
+	
+	//	File file = new File(expath+"/"+name+".txt");
+		try {
+			Files.deleteIfExists(file2);
+		} catch (IOException e) {}
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
