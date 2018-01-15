@@ -29,6 +29,8 @@ public class FileManager {
 	Path expath;
 
 	String extext;
+	
+	boolean firsttime;
 
 	// Konstruktor
 
@@ -58,6 +60,7 @@ public class FileManager {
 
 			PrintWriter printer = new PrintWriter(writer);
 
+			printer.println("firsttime="+ firsttime);
 			printer.println("letters=" + frame.letters.isSelected());
 			printer.println("numbers=" + frame.numbers.isSelected());
 			printer.println("basicsigns=" + frame.basicsigns.isSelected());
@@ -70,6 +73,37 @@ public class FileManager {
 		} catch (Exception e) {
 		}
 	}
+	
+	
+	
+	public void initConfig() {
+		
+		try {
+			if (!Files.isDirectory(datapath)) 
+				Files.createDirectory(datapath);
+
+			Path config = datapath.resolve("config.txt");
+			if (!Files.exists(config)) {
+				Files.createFile(config);
+
+			FileWriter writer = new FileWriter(config.toString());
+
+			PrintWriter printer = new PrintWriter(writer);
+
+			printer.println("firsttime=" + true);
+			printer.println("letters=" + true);
+			printer.println("numbers=" + false);
+			printer.println("basicsigns=" + true);
+			printer.println("manysigns=" + false);
+			printer.println("umlauts=" + false);
+			printer.println("uppercases=" + false);
+			printer.println("length=" + 1);
+			printer.println("language=" + 1);
+			printer.close();
+			}} catch (Exception e) {
+		}
+	}
+	
 
 	/**
 	 * Lädt ausgewählte Einstellungen aus der config.txt und setzt Diese.
@@ -78,6 +112,7 @@ public class FileManager {
 	public void loadConfig() {
 		try {
 
+			if(Files.isDirectory(datapath)) {
 			Path path2 = datapath.resolve("config.txt");
 
 			FileReader fr = new FileReader(path2.toString());
@@ -91,6 +126,7 @@ public class FileManager {
 			}
 
 			br.close();
+			firsttime = Boolean.parseBoolean(prop.getProperty("firsttime"));
 			frame.letters.setSelected(Boolean.parseBoolean(prop.getProperty("letters")));
 			frame.numbers.setSelected(Boolean.parseBoolean(prop.getProperty("numbers")));
 			frame.basicsigns.setSelected(Boolean.parseBoolean(prop.getProperty("basicsigns")));
@@ -100,7 +136,7 @@ public class FileManager {
 			frame.lengthbox.setSelectedIndex(Integer.parseInt(prop.getProperty("length")));
 			frame.languagebox.setSelectedIndex(Integer.parseInt(prop.getProperty("language")));
 
-		} catch (Exception e) {
+			}} catch (Exception e) {
 			System.out.println("config.txt konnte nicht geladen werden.");
 		}
 
@@ -165,16 +201,6 @@ public class FileManager {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	public void importFile(String userentry) {
 		try {
 
@@ -215,6 +241,7 @@ public class FileManager {
 	class Windowcloser extends WindowAdapter {
 		@Override
 		public void windowClosing(WindowEvent arg0) {
+			firsttime = false;
 			setConfig();
 		}
 	}

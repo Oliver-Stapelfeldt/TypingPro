@@ -625,12 +625,13 @@ public class Frame extends JFrame {
 
 		// TestButton
 
-		// JButton test = new JButton();
-		// test.setText("test");
-		// test.addActionListener(e-> filemanager.readFilenames());
-		// test.setFocusable(false);
-		// buttonpanel.add(test);
+		 JButton test = new JButton();
+		 test.setText("test");
+		 test.addActionListener(e-> System.out.println(filemanager.firsttime));
+		 test.setFocusable(false);
+		 buttonpanel.add(test);
 
+		filemanager.initConfig();
 		filemanager.loadConfig();
 		languagem.setlang();
 		setVisible(true);
