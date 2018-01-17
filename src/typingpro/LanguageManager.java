@@ -73,10 +73,10 @@ public class LanguageManager {
 			
 			
 			if(Typo.typolist.size()<1) {
-				frame.area.setText(Typo.emptytypolist.getText());
+				frame.typoarea.setText(Typo.emptytypolist.getText());
 				}
 			else {
-				frame.area.setText(Typo.printtypos());
+				frame.typoarea.setText(Typo.printtypos());
 			}
 			
 			frame.typodialog.setTitle(Typo.dialogtitle.getText());

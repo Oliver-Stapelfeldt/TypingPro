@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -29,6 +30,8 @@ public class FileManager {
 	Path expath;
 
 	String extext;
+	
+	int colorindex;
 
 	// Konstruktor
 
@@ -66,6 +69,11 @@ public class FileManager {
 			printer.println("uppercases=" + frame.uppercases.isSelected());
 			printer.println("length=" + frame.lengthbox.getSelectedIndex());
 			printer.println("language=" + frame.languagebox.getSelectedIndex());
+			int selected = 0;
+			for (int i=0; i< frame.coloritems.size();i++)
+				if(frame.coloritems.get(i).isSelected())
+					selected = i;
+			printer.println("color=" + selected);
 			printer.close();
 		} catch (Exception e) {
 		}
@@ -88,7 +96,6 @@ public class FileManager {
 				temparr = temp.split("=");
 				prop.setProperty(temparr[0], temparr[1]);
 			}
-
 			br.close();
 			frame.letters.setSelected(Boolean.parseBoolean(prop.getProperty("letters")));
 			frame.numbers.setSelected(Boolean.parseBoolean(prop.getProperty("numbers")));
@@ -98,6 +105,8 @@ public class FileManager {
 			frame.uppercases.setSelected(Boolean.parseBoolean(prop.getProperty("uppercases")));
 			frame.lengthbox.setSelectedIndex(Integer.parseInt(prop.getProperty("length")));
 			frame.languagebox.setSelectedIndex(Integer.parseInt(prop.getProperty("language")));
+			colorindex =Integer.parseInt(prop.getProperty("language"));
+			frame.coloritems.get(colorindex).setSelected(true);
 
 			}} catch (Exception e) {
 			System.out.println("config.txt konnte nicht geladen werden.");
@@ -116,7 +125,6 @@ public class FileManager {
 			readTextfile(file);
 			frame.importdialog.setVisible(true);}
 	}
-	
 	
 	
 	public String readTextfile(File file) {

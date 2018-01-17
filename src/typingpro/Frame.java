@@ -6,8 +6,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -38,30 +40,32 @@ public class Frame extends JFrame {
 
 	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
 			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel, exlistnorthpanel,
-			namemainpanel, namenorthpanel, namebuttonpanel;
+			namemainpanel, namenorthpanel, namebuttonpanel, nametextpanel;
 
 	Infolabel infolabel;
 
 	JLabel typolabel, textlabel, blink, timelabel, time, keysleftlabel, keysleft, typoslabel, typos, speedlabel, speed,
-			speedunit, exdiatitle, exdialabel;
+			speedunit, exdiatitle, exdialabel, enternamelabel;
 
-	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex, deleteex;
+	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex, deleteex, choosename, cancelname;
 
 	JMenuBar bar;
 
-	JMenu filemenu, textexmenu, typomenu;
+	JMenu filemenu, textexmenu, typomenu, optionmenu, colormenu;
 
 	JMenuItem randomitem, quititem, loadexitem, importexitem, typoexitem, typoviewitem, typoclearitem;
+	
+	List<JCheckBoxMenuItem> coloritems;
 
 	JRadioButton letters, numbers, basicsigns, manysigns, umlauts, uppercases;
 
-	Color background, background2, background3, background4;
-
-	LineBorder border, menuborder;
+	Color background;
 
 	JDialog typodialog, importdialog, textexdialog;
 
-	JTextArea area;
+	JTextArea typoarea;
+	
+	JTextField namefield;
 
 	JScrollPane scroll, exscroll;
 
@@ -132,36 +136,6 @@ public class Frame extends JFrame {
 		textpanel.setLayout(new BorderLayout());
 		textpanel.add(progresspanel, BorderLayout.NORTH);
 
-		// Hintergrundfarben werden festfelegt und Ränder hinzugefügt.
-
-		background = new Color(243, 205, 5);
-		background2 = new Color(244, 159, 5);
-		background3 = new Color(208, 112, 3);
-		background4 = new Color(54, 104, 141);
-
-		mainpanel.setBackground(background3);
-		toppanel.setBackground(background3);
-		textpanel.setBackground(background);
-		progresspanel.setBackground(background);
-		topwest.setBackground(background2);
-		topwests.setBackground(background2);
-		topcenter.setBackground(background2);
-		topsouth.setBackground(background2);
-		topeast.setBackground(background2);
-		radio.setBackground(background2);
-		buttonpanel.setBackground(background4);
-		timepanel.setBackground(background2);
-		speedpanel.setBackground(background2);
-		typopanel.setBackground(background2);
-		keypanel.setBackground(background2);
-
-		border = new LineBorder(background3, 5);
-		topwest.setBorder(border);
-		topcenter.setBorder(border);
-		textpanel.setBorder(border);
-		topsouth.setBorder(border);
-		topeast.setBorder(border);
-
 		// Objekte anderer Klassen werden erzeugt und der Languagemanager registriert
 		// alle notwenigen Komponenten des Dialoges.
 
@@ -169,6 +143,7 @@ public class Frame extends JFrame {
 		KeyManager keymanager = new KeyManager(this, textmanager);
 		FileManager filemanager = new FileManager(this);
 		FileManager.Windowcloser closer = filemanager.windowcloser;
+		ColorManager colormanager = new ColorManager(this);
 		addWindowListener(closer);
 
 		languagem = new LanguageManager(this);
@@ -181,25 +156,17 @@ public class Frame extends JFrame {
 		// Top Bar
 		// Menü wird erstellt und eingerichtet
 
-		Color menucolor = background;
-		menuborder = new LineBorder(background, 2);
 		bar = new JMenuBar();
-		bar.setBackground(menucolor);
-
-		bar.setBorder(menuborder);
 		setJMenuBar(bar);
 		filemenu = new JMenu();
-		filemenu.setBackground(menucolor);
+
 		filemenu.setOpaque(true);
 		filemenu.getPopupMenu().setBorder(null);
-
 		languagem.registerComponent(filemenu, "filemenu");
 		bar.add(filemenu);
+		
 		randomitem = new JMenuItem();
 		languagem.registerComponent(randomitem, "newitem");
-		randomitem.setBackground(menucolor);
-		randomitem.setBorder(menuborder);
-
 		randomitem.addActionListener(e -> {
 			using = Using.RANDOM;
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
@@ -209,68 +176,133 @@ public class Frame extends JFrame {
 		typomenu = new JMenu();
 		languagem.registerComponent(typomenu, "typomenu");
 		typomenu.setOpaque(true);
-		typomenu.setBackground(menucolor);
 		typomenu.getPopupMenu().setBorder(null);
-		typomenu.setBorder(menuborder);
 		filemenu.add(typomenu);
+
 		typoexitem = new JMenuItem();
 		languagem.registerComponent(typoexitem, "typoexitem");
-		typoexitem.setBackground(menucolor);
-		typoexitem.setBorder(menuborder);
-		typoexitem.addActionListener(e -> {
+			typoexitem.addActionListener(e -> {
 			using = Using.TYPOS;
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		typomenu.add(typoexitem);
+	
 		typoviewitem = new JMenuItem();
 		languagem.registerComponent(typoviewitem, "typoviewitem");
-		typoviewitem.setBackground(menucolor);
-		typoviewitem.setBorder(menuborder);
 		typoviewitem.addActionListener(e -> typodialog.setVisible(true));
 		typomenu.add(typoviewitem);
+		
 		typoclearitem = new JMenuItem();
 		languagem.registerComponent(typoclearitem, "typoclearitem");
-		typoclearitem.setBackground(menucolor);
-		typoclearitem.setBorder(menuborder);
 		typoclearitem.addActionListener(e -> {
 			Typo.typolist = new ArrayList<>();
-			area.setText(Typo.emptytypolist.getText());
+			typoarea.setText(Typo.emptytypolist.getText());
 		});
 		typomenu.add(typoclearitem);
 
 		textexmenu = new JMenu();
 		languagem.registerComponent(textexmenu, "textexmenu");
 		textexmenu.setOpaque(true);
-		textexmenu.setBackground(menucolor);
 		textexmenu.getPopupMenu().setBorder(null);
-		textexmenu.setBorder(menuborder);
 		filemenu.add(textexmenu);
+
 		loadexitem = new JMenuItem();
 		languagem.registerComponent(loadexitem, "loadexitem");
-		loadexitem.setBackground(menucolor);
-		loadexitem.addActionListener(e -> {
+			loadexitem.addActionListener(e -> {
 			list.setListData(filemanager.readFilenames());
 			textexdialog.setVisible(true);
 		});
-		loadexitem.setBorder(menuborder);
 		textexmenu.add(loadexitem);
+
 		importexitem = new JMenuItem();
 		languagem.registerComponent(importexitem, "importexitem");
-		importexitem.setBackground(menucolor);
-		importexitem.setBorder(menuborder);
 		importexitem.addActionListener(e -> filemanager.chooseFile());
 		textexmenu.add(importexitem);
 		
 		quititem = new JMenuItem();
 		languagem.registerComponent(quititem, "quititem");
-		quititem.setBackground(menucolor);
-		quititem.setBorder(menuborder);
 		quititem.addActionListener(e -> {
 			filemanager.setConfig();
 			System.exit(0);
 		});
 		filemenu.add(quititem);
-
+		
+		optionmenu = new JMenu();
+		optionmenu.setOpaque(true);
+		optionmenu.getPopupMenu().setBorder(null);
+		languagem.registerComponent(optionmenu, "optionmenu");
+		bar.add(optionmenu);
+		
+		colormenu = new JMenu();
+		colormenu.setOpaque(true);
+		colormenu.getPopupMenu().setBorder(null);
+		languagem.registerComponent(colormenu, "colormenu");
+		optionmenu.add(colormenu);
+		
+		coloritems = new ArrayList<>();
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(0), "beachitem");
+		coloritems.get(0).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(0))item.setSelected(false); colormanager.setColors(colormanager.beach);});
+		colormenu.add(coloritems.get(0));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(1), "appleitem");
+		coloritems.get(1).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(1))item.setSelected(false); colormanager.setColors(colormanager.apples);});
+		colormenu.add(coloritems.get(1));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(2), "wooditem");
+		coloritems.get(2).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(2))item.setSelected(false); colormanager.setColors(colormanager.wood);});
+		colormenu.add(coloritems.get(2));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(3), "deepseaitem");
+		coloritems.get(3).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(3))item.setSelected(false); colormanager.setColors(colormanager.deepsea);});
+		colormenu.add(coloritems.get(3));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(4), "greekitem");
+		coloritems.get(4).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(4))item.setSelected(false); colormanager.setColors(colormanager.greek);});
+		colormenu.add(coloritems.get(4));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(5), "mountainitem");
+		coloritems.get(5).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(5))item.setSelected(false); colormanager.setColors(colormanager.mountain);});
+		colormenu.add(coloritems.get(5));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(6), "sushiitem");
+		coloritems.get(6).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(6))item.setSelected(false); colormanager.setColors(colormanager.sushi);});
+		colormenu.add(coloritems.get(6));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(7), "strawberryitem");
+		coloritems.get(7).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(7))item.setSelected(false); colormanager.setColors(colormanager.strawberry);});
+		colormenu.add(coloritems.get(7));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(8), "kitchenitem");
+		coloritems.get(8).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(8))item.setSelected(false); colormanager.setColors(colormanager.kitchen);});
+		colormenu.add(coloritems.get(8));
+		
+		coloritems.add(new JCheckBoxMenuItem());
+		languagem.registerComponent(coloritems.get(9), "poppiesitem");
+		coloritems.get(9).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+			if( item != coloritems.get(9))item.setSelected(false); colormanager.setColors(colormanager.poppies);});
+		colormenu.add(coloritems.get(9));
+		
+				
+		
 		// TopPanel West
 
 		// RadioButtons und Combobox werden erstellt und eingerichtet
@@ -294,20 +326,15 @@ public class Frame extends JFrame {
 		uppercases = new JRadioButton();
 		languagem.registerComponent(uppercases, "uppercasesradio");
 		uppercases.setFont(radiof);
-		letters.setBackground(background2);
+	
 		letters.setFocusable(false);
 		letters.setSelected(true);
-		numbers.setBackground(background2);
 		numbers.setFocusable(false);
-		basicsigns.setBackground(background2);
 		basicsigns.setFocusable(false);
 		basicsigns.setSelected(true);
-		manysigns.setBackground(background2);
 		manysigns.setFocusable(false);
-		umlauts.setBackground(background2);
 		umlauts.setFocusable(false);
 		umlauts.setSelected(true);
-		uppercases.setBackground(background2);
 		uppercases.setFocusable(false);
 
 		radio.add(letters);
@@ -380,11 +407,9 @@ public class Frame extends JFrame {
 		// Label wird erstellt und eingerichtet.
 
 		typolabel = new JLabel();
-		typolabel.setForeground(new Color(30, 30, 30));
 		typolabel.setFont(new Font("Arial Black", Font.BOLD, 23));
 		topsouth.add(typolabel, BorderLayout.SOUTH);
 		infolabel = new Infolabel();
-		infolabel.setForeground(new Color(30, 30, 30));
 		infolabel.setFont(new Font("Arial Black", Font.BOLD, 23));
 		topsouth.add(infolabel, BorderLayout.SOUTH);
 
@@ -395,8 +420,6 @@ public class Frame extends JFrame {
 		progress = new JProgressBar(0, 100);
 		progress.setValue(0);
 		progress.setStringPainted(true);
-		progress.setForeground(background4);
-		progress.setBorder(border);
 		progresspanel.add(progress);
 
 		// TextPanel
@@ -404,10 +427,8 @@ public class Frame extends JFrame {
 		// Label werden erstellt und eingerichtet. Thread wird gestartet.
 
 		textlabel = new JLabel("");
-		textlabel.setForeground(new Color(30, 30, 30));
 		textlabel.setFont(new Font("Arial", Font.BOLD, 50));
 		blink = new JLabel("         |");
-		blink.setForeground(new Color(30, 30, 30));
 		blink.setFont(new Font("Arial", Font.BOLD, 50));
 		textpanel.add(blink, BorderLayout.WEST);
 		textpanel.add(textlabel, BorderLayout.CENTER);
@@ -418,7 +439,7 @@ public class Frame extends JFrame {
 
 		// Buttons werden erstellt und eingerichtet.
 
-		Color buttonforeground = new Color(30, 30, 30);
+
 		Font bfont = new Font("Arial", Font.BOLD, 18);
 		refresh = new JButton();
 		languagem.registerComponent(refresh, "refreshbutton");
@@ -427,9 +448,7 @@ public class Frame extends JFrame {
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		refresh.setFocusable(false);
-		refresh.setForeground(buttonforeground);
-		refresh.setBackground(background2);
-
+	
 		newrandomtext = new JButton();
 		languagem.registerComponent(newrandomtext, "newrandomtextbutton");
 		newrandomtext.setFont(bfont);
@@ -438,8 +457,7 @@ public class Frame extends JFrame {
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		newrandomtext.setFocusable(false);
-		newrandomtext.setForeground(buttonforeground);
-		newrandomtext.setBackground(background2);
+
 
 		newtextexcercise = new JButton();
 		languagem.registerComponent(newtextexcercise, "newtextexcercisebutton");
@@ -449,8 +467,6 @@ public class Frame extends JFrame {
 			textexdialog.setVisible(true);
 		});
 		newtextexcercise.setFocusable(false);
-		newtextexcercise.setForeground(buttonforeground);
-		newtextexcercise.setBackground(background2);
 
 		quit = new JButton();
 		languagem.registerComponent(quit, "quitbutton");
@@ -460,8 +476,6 @@ public class Frame extends JFrame {
 			System.exit(0);
 		});
 		quit.setFocusable(false);
-		quit.setForeground(buttonforeground);
-		quit.setBackground(background2);
 
 		newtypo = new JButton();
 		languagem.registerComponent(newtypo, "newtypobutton");
@@ -471,8 +485,6 @@ public class Frame extends JFrame {
 			using.prepareExcercise(textmanager, keymanager, textlabel, typolabel);
 		});
 		newtypo.setFocusable(false);
-		newtypo.setForeground(buttonforeground);
-		newtypo.setBackground(background2);
 
 		buttonpanel.add(refresh);
 		buttonpanel.add(newrandomtext);
@@ -486,11 +498,10 @@ public class Frame extends JFrame {
 
 		typodialog = new JDialog();
 		typodialog.setBounds(150, 400, 300, 300);
-		area = new JTextArea();
-		area.setFont(new Font("Arial", Font.BOLD, 20));
-		area.setBackground(background2);
-		area.setEditable(false);
-		scroll = new JScrollPane(area);
+		typoarea = new JTextArea();
+		typoarea.setFont(new Font("Arial", Font.BOLD, 20));
+		typoarea.setEditable(false);
+		scroll = new JScrollPane(typoarea);
 		typodialog.add(scroll);
 
 		// Dialog für Imports wird erstellt und eingerichtet
@@ -502,24 +513,19 @@ public class Frame extends JFrame {
 		importdialog.setBounds(400, 400, 300, 200);
 		importdialog.add(namemainpanel);
 		namemainpanel.setLayout(new BorderLayout());
-		namemainpanel.setBackground(background2);
-		namemainpanel.setBorder(border);
-		JPanel textpanel = new JPanel();
-		textpanel.setBackground(background2);
-		textpanel.setLayout(new GridLayout(3, 1));
+		nametextpanel = new JPanel();
+		nametextpanel.setLayout(new GridLayout(3, 1));
 
-		JLabel enternamelabel = new JLabel("Enter a name");
+		enternamelabel = new JLabel("Enter a name");
 		enternamelabel.setFont(new Font("Arial Black", Font.PLAIN, 17));
 		languagem.registerComponent(enternamelabel, "enternamelabel");
 		namenorthpanel = new JPanel();
-		namenorthpanel.setBackground(background2);
-		textpanel.add(namenorthpanel);
+		nametextpanel.add(namenorthpanel);
 		namenorthpanel.add(enternamelabel);
-		namemainpanel.add(textpanel, BorderLayout.CENTER);
+		namemainpanel.add(nametextpanel, BorderLayout.CENTER);
 		namebuttonpanel = new JPanel();
-		namebuttonpanel.setBackground(background4);
 		namemainpanel.add(namebuttonpanel, BorderLayout.SOUTH);
-		JTextField namefield = new JTextField();
+		namefield = new JTextField();
 		namefield.addActionListener(e -> {
 			String exname = namefield.getText().trim();
 			if (exname.length() > 0) {
@@ -529,12 +535,10 @@ public class Frame extends JFrame {
 			}
 		});
 		namefield.setFont(radiof);
-		textpanel.add(namefield, BorderLayout.CENTER);
-		JButton choosename = new JButton();
+		nametextpanel.add(namefield, BorderLayout.CENTER);
+		choosename = new JButton();
 		choosename.setFont(bfont2);
 		choosename.setFocusable(false);
-		choosename.setForeground(buttonforeground);
-		choosename.setBackground(background2);
 		languagem.registerComponent(choosename, "choosenameenter");
 		choosename.addActionListener(e -> {
 			String exname = namefield.getText().trim();
@@ -545,11 +549,9 @@ public class Frame extends JFrame {
 			}
 		});
 		namebuttonpanel.add(choosename, BorderLayout.SOUTH);
-		JButton cancelname = new JButton();
+		cancelname = new JButton();
 		cancelname.setFont(bfont2);
 		cancelname.setFocusable(false);
-		cancelname.setForeground(buttonforeground);
-		cancelname.setBackground(background2);
 		languagem.registerComponent(cancelname, "choosenamecancel");
 		cancelname.addActionListener(e -> importdialog.setVisible(false));
 		namebuttonpanel.add(cancelname, BorderLayout.SOUTH);
@@ -561,23 +563,18 @@ public class Frame extends JFrame {
 		textexdialog.setLocationRelativeTo(null);
 		textexdialog.setSize(350, 300);
 		textexdialog.setMinimumSize(new Dimension(320,300));
-		textexdialog.setBackground(background2);
 
 		exlistpanel = new JPanel();
-		exlistpanel.setBackground(background2);
 		exlistpanel.setLayout(new BorderLayout());
 		textexdialog.add(exlistpanel, BorderLayout.CENTER);
 
 		exlistbuttons = new JPanel();
-		exlistbuttons.setBackground(background4);
 		textexdialog.add(exlistbuttons, BorderLayout.SOUTH);
 
 		exdiatitle = new JLabel();
 		languagem.registerComponent(exdiatitle, "loadex2");
 
 		exlistnorthpanel = new JPanel();
-		exlistnorthpanel.setBackground(background2);
-		exlistpanel.setBorder(border);
 		exlistpanel.add(exlistnorthpanel, BorderLayout.NORTH);
 
 		exdialabel = new JLabel();
@@ -588,7 +585,6 @@ public class Frame extends JFrame {
 		loadex = new JButton();
 		languagem.registerComponent(loadex, "loadex");
 		loadex.setFont(bfont2);
-		loadex.setBackground(background2);
 		loadex.addActionListener(e -> {
 			using = Using.TEXT;
 			textmanager.textexcercise = filemanager.readTextfilefromname(list.getSelectedValue());
@@ -600,18 +596,15 @@ public class Frame extends JFrame {
 		deleteex = new JButton();
 		languagem.registerComponent(deleteex, "deleteex");
 		deleteex.setFont(bfont2);
-		deleteex.setBackground(background2);
 		deleteex.addActionListener(e -> {
 			filemanager.deleteTextfilefromname(list.getSelectedValue());
 			list.setListData(filemanager.readFilenames());
 		});
-
 		exlistbuttons.add(deleteex);
 
 		cancelex = new JButton();
 		languagem.registerComponent(cancelex, "cancelex");
 		cancelex.setFont(bfont2);
-		cancelex.setBackground(background2);
 		cancelex.addActionListener(e -> textexdialog.setVisible(false));
 		exlistbuttons.add(cancelex);
 
@@ -631,8 +624,9 @@ public class Frame extends JFrame {
 //		 test.setFocusable(false);
 //		 buttonpanel.add(test);
 
-		
+		colormanager.registerAllComponents();
 		filemanager.loadConfig();
+		colormanager.setColors(colormanager.colororder[filemanager.colorindex]);
 		languagem.setlang();
 		setVisible(true);
 
@@ -650,13 +644,7 @@ public class Frame extends JFrame {
 	class Infolabel extends JLabel {
 		private static final long serialVersionUID = 1L;
 
-		JLabel reminder;
-		JLabel emptylabel;
-		JLabel anykeytostart;
-		JLabel anykeytorestart;
-		JLabel chooseanykeys;
-		JLabel typopoolempty;
-		JLabel typoadded;
+		JLabel reminder, emptylabel, anykeytostart, anykeytorestart, chooseanykeys, typopoolempty, typoadded;
 
 		public Infolabel() {
 

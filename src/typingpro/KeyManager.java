@@ -106,7 +106,7 @@ public class KeyManager implements KeyListener {
 			
 			
 			Typo.add(new Typo(frame, textmanager.text.charAt(0), k.getKeyChar()));
-			frame.area.setText(Typo.printtypos());
+			frame.typoarea.setText(Typo.printtypos());
 			frame.typos.setText(""+Typo.typos);
 			frame.infolabel.setInfotext(frame.infolabel.typoadded);
 			frame.typolabel.setText("\""+ textmanager.text.charAt(0)+"\"");
