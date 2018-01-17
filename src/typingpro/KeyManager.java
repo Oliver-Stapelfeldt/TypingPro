@@ -140,7 +140,7 @@ public class KeyManager implements KeyListener {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				frame.textlabel.setForeground(new Color(30, 30, 30));
+				frame.textlabel.setForeground(frame.foreground);
 				flashrunning = false;
 			}
 		}

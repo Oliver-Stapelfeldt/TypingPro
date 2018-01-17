@@ -31,8 +31,8 @@ public class ColorManager {
 	Color[] beach = { new Color(243, 205, 5), new Color(244, 159, 5), new Color(208, 112, 3), new Color(54, 104, 141),
 			new Color(30, 30, 30), new Color(54, 104, 141)};
 
-	Color[] poppies = { new Color(137, 218, 89), new Color(249, 136, 102), new Color(255, 66, 14),
-			new Color(128, 189, 158), new Color(30, 30, 30), new Color(249, 136, 102)};
+	Color[] ornamental = { new Color(216,213,131), new Color(217,172,42), new Color(118,63,2),
+			new Color(114,0,23), new Color(30, 30, 30), new Color(114,0,23)};
 
 	Color[] sushi = { new Color(184, 210, 11), new Color(245, 108, 87), new Color(35, 27, 18), new Color(247, 118, 4),
 			new Color(30, 30, 30), new Color(245, 108, 87) };
@@ -49,8 +49,8 @@ public class ColorManager {
 	Color[] greek = { new Color(244, 234, 222), new Color(237, 140, 114), new Color(47, 73, 110),
 			new Color(41, 136, 188), new Color(30, 30, 30), new Color(41, 136, 188) };
 
-	Color[] strawberry = { new Color(255, 235, 229), new Color(254, 122, 71), new Color(216, 65, 47),
-			new Color(245, 202, 153), new Color(30, 30, 30), new Color(254, 122, 71) };
+	Color[] nightvision = { new Color(34,38,41), new Color(34,38,41), new Color(97,137,47),
+			new Color(71,75,79), new Color(134,194,50), new Color(134,194,50) };
 
 	Color[] kitchen = { new Color(253, 246, 246), new Color(179, 219, 192), new Color(254, 0, 0),
 			new Color(103, 186, 202), new Color(30, 30, 30), new Color(179, 219, 192) };
@@ -58,7 +58,7 @@ public class ColorManager {
 	Color[] apples = { new Color(244, 236, 106), new Color(187, 207, 74), new Color(231, 63, 11),
 			new Color(161, 31, 12), new Color(30, 30, 30), new Color(161, 31, 12)};
 
-	Color[][] colororder = { beach, apples, wood, deepsea, greek, mountain, sushi, strawberry, kitchen, poppies };
+	Color[][] colororder = { beach, apples, wood, deepsea, greek, mountain, sushi, nightvision, kitchen, ornamental };
 
 	public ColorManager(Frame frame) {
 		this.frame = frame;
@@ -89,8 +89,6 @@ public class ColorManager {
 	public void registerComponent(JComponent component, int foreground, int background) {
 		colorcomponents.add(new ColorComponent(component, foreground, background));
 	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 
 	public void updateBorders() {
 		Border border = new LineBorder(background3, 5);
@@ -311,7 +309,7 @@ public class ColorManager {
 		registerComponent(frame.typoclearitem, 1, 1);
 
 		for (JCheckBoxMenuItem item : frame.coloritems)
-			this.registerComponent(item, 1, 1);
+			registerComponent(item, 1, 1);
 
 		// MenuBar
 

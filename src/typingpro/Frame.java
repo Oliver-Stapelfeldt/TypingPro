@@ -7,7 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -25,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
 
 /**
  * Diese Klasse ist für den Aufbau der Benutzteroberfläche zuständig.
@@ -59,7 +57,7 @@ public class Frame extends JFrame {
 
 	JRadioButton letters, numbers, basicsigns, manysigns, umlauts, uppercases;
 
-	Color background;
+	Color background, foreground;
 
 	JDialog typodialog, importdialog, textexdialog;
 
@@ -256,9 +254,9 @@ public class Frame extends JFrame {
 		languagem.registerComponent(coloritems.get(4), "greekitem");
 		languagem.registerComponent(coloritems.get(5), "mountainitem");
 		languagem.registerComponent(coloritems.get(6), "sushiitem");
-		languagem.registerComponent(coloritems.get(7), "strawberryitem");
+		languagem.registerComponent(coloritems.get(7), "nightvisionitem");
 		languagem.registerComponent(coloritems.get(8), "kitchenitem");
-		languagem.registerComponent(coloritems.get(9), "poppiesitem");
+		languagem.registerComponent(coloritems.get(9), "ornamentalitem");
 	
 		
 				

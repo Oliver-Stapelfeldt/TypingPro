@@ -1,7 +1,5 @@
 package typingpro;
 
-import java.awt.Color;
-
 /**
  * Dieser Thread sorgt für ein blinkendes "|" vor dem Übungstext.
  * Die Hintergrundfarbe ändert sich jede halbe Sekunde.
@@ -12,8 +10,6 @@ import java.awt.Color;
 public class Blinker extends Thread {
 
 	Frame frame;
-	
-	Color black = new Color(0,0,0);
 
 	
 	public Blinker(Frame frame) {
@@ -23,7 +19,7 @@ public class Blinker extends Thread {
 	
 	public void run(){
 		while (true) {
-			frame.blink.setForeground(black);
+			frame.blink.setForeground(frame.foreground);
 			
 			try {
 				Thread.sleep(500);
