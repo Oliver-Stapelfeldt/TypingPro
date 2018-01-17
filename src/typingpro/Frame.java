@@ -241,65 +241,25 @@ public class Frame extends JFrame {
 		
 		coloritems = new ArrayList<>();
 		
-		coloritems.add(new JCheckBoxMenuItem());
+		for (int j=0; j< colormanager.colororder.length;j++) {
+			int index =j;
+			coloritems.add(new JCheckBoxMenuItem());
+			coloritems.get(j).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
+				if( item != coloritems.get(index))item.setSelected(false); colormanager.setColors();});
+			colormenu.add(coloritems.get(j));
+		}
+		
 		languagem.registerComponent(coloritems.get(0), "beachitem");
-		coloritems.get(0).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(0))item.setSelected(false); colormanager.setColors(colormanager.beach);});
-		colormenu.add(coloritems.get(0));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(1), "appleitem");
-		coloritems.get(1).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(1))item.setSelected(false); colormanager.setColors(colormanager.apples);});
-		colormenu.add(coloritems.get(1));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(2), "wooditem");
-		coloritems.get(2).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(2))item.setSelected(false); colormanager.setColors(colormanager.wood);});
-		colormenu.add(coloritems.get(2));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(3), "deepseaitem");
-		coloritems.get(3).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(3))item.setSelected(false); colormanager.setColors(colormanager.deepsea);});
-		colormenu.add(coloritems.get(3));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(4), "greekitem");
-		coloritems.get(4).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(4))item.setSelected(false); colormanager.setColors(colormanager.greek);});
-		colormenu.add(coloritems.get(4));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(5), "mountainitem");
-		coloritems.get(5).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(5))item.setSelected(false); colormanager.setColors(colormanager.mountain);});
-		colormenu.add(coloritems.get(5));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(6), "sushiitem");
-		coloritems.get(6).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(6))item.setSelected(false); colormanager.setColors(colormanager.sushi);});
-		colormenu.add(coloritems.get(6));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(7), "strawberryitem");
-		coloritems.get(7).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(7))item.setSelected(false); colormanager.setColors(colormanager.strawberry);});
-		colormenu.add(coloritems.get(7));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(8), "kitchenitem");
-		coloritems.get(8).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(8))item.setSelected(false); colormanager.setColors(colormanager.kitchen);});
-		colormenu.add(coloritems.get(8));
-		
-		coloritems.add(new JCheckBoxMenuItem());
 		languagem.registerComponent(coloritems.get(9), "poppiesitem");
-		coloritems.get(9).addActionListener(e -> {for (JCheckBoxMenuItem item : coloritems) 
-			if( item != coloritems.get(9))item.setSelected(false); colormanager.setColors(colormanager.poppies);});
-		colormenu.add(coloritems.get(9));
+	
 		
 				
 		
@@ -328,13 +288,10 @@ public class Frame extends JFrame {
 		uppercases.setFont(radiof);
 	
 		letters.setFocusable(false);
-		letters.setSelected(true);
 		numbers.setFocusable(false);
 		basicsigns.setFocusable(false);
-		basicsigns.setSelected(true);
 		manysigns.setFocusable(false);
 		umlauts.setFocusable(false);
-		umlauts.setSelected(true);
 		uppercases.setFocusable(false);
 
 		radio.add(letters);
@@ -626,7 +583,7 @@ public class Frame extends JFrame {
 
 		colormanager.registerAllComponents();
 		filemanager.loadConfig();
-		colormanager.setColors(colormanager.colororder[filemanager.colorindex]);
+		colormanager.setColors();
 		languagem.setlang();
 		setVisible(true);
 

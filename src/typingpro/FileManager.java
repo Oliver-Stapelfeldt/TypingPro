@@ -30,8 +30,6 @@ public class FileManager {
 	Path expath;
 
 	String extext;
-	
-	int colorindex;
 
 	// Konstruktor
 
@@ -85,9 +83,30 @@ public class FileManager {
 
 	public void loadConfig() {
 		try {
-			Path path = datapath.resolve("config.txt");
-			if(Files.exists(path)) {
-			FileReader fr = new FileReader(path.toString());
+			if (!Files.isDirectory(datapath))
+			Files.createDirectory(datapath);
+			Path config = datapath.resolve("config.txt");
+			if(!Files.exists(config)) {
+				Files.createFile(config);
+				FileWriter writer = new FileWriter(config.toString());
+
+				PrintWriter printer = new PrintWriter(writer);
+
+				printer.println("letters=true");
+				printer.println("numbers=false");
+				printer.println("basicsigns=true");
+				printer.println("manysigns=false");
+				printer.println("umlauts=false");
+				printer.println("uppercases=false");
+				printer.println("length=1");
+				printer.println("language=1");
+				printer.println("color=0");
+				
+				printer.close();
+			}
+			
+		
+			FileReader fr = new FileReader(config.toString());
 			BufferedReader br = new BufferedReader(fr);
 			String[] temparr;
 			String temp;
@@ -105,10 +124,9 @@ public class FileManager {
 			frame.uppercases.setSelected(Boolean.parseBoolean(prop.getProperty("uppercases")));
 			frame.lengthbox.setSelectedIndex(Integer.parseInt(prop.getProperty("length")));
 			frame.languagebox.setSelectedIndex(Integer.parseInt(prop.getProperty("language")));
-			colorindex =Integer.parseInt(prop.getProperty("language"));
-			frame.coloritems.get(colorindex).setSelected(true);
+			frame.coloritems.get(Integer.parseInt(prop.getProperty("color"))).setSelected(true);
 
-			}} catch (Exception e) {
+			} catch (Exception e) {
 			System.out.println("config.txt konnte nicht geladen werden.");
 		}
 
