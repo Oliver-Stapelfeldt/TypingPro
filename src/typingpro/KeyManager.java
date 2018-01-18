@@ -19,7 +19,6 @@ public class KeyManager implements KeyListener {
 	Timer timer;
 	int textlength;
 	long startingtime;
-	boolean flashrunning;
 	boolean firstwrong;
 	
 	// Konstruktor
@@ -113,7 +112,7 @@ public class KeyManager implements KeyListener {
 			frame.typolabel.setVisible(true);
 			new Thread() {
 				public void run() {
-					flash();
+					frame.colormanager.flash();
 				}
 			}.start();
 		}
@@ -126,25 +125,7 @@ public class KeyManager implements KeyListener {
 		frame.textlabel.setText(textmanager.text.toString());
 	}
 	
-	/**
-	 * Lässt den Übungstext für kurze Zeit die Farbe wechseln
-	 */
 
-	public void flash() {
-		if (!flashrunning) {
-			synchronized (this) {
-				flashrunning = true;
-				frame.textlabel.setForeground(new Color(255, 0, 0));
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				frame.textlabel.setForeground(frame.foreground);
-				flashrunning = false;
-			}
-		}
-	}
 	
 	/**
 	 * Stoppt einen Thread des Typs Timer

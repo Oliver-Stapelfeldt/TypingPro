@@ -25,6 +25,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import typingpro.ColorManager.Blinker;
+
 /**
  * Diese Klasse ist für den Aufbau der Benutzteroberfläche zuständig.
  * 
@@ -36,7 +38,7 @@ public class Frame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topwest, topwests, topcenter, topsouth, topeast,
+	JPanel mainpanel, toppanel, textpanel, progresspanel, buttonpanel, topcenter, topsouth,
 			radio, timepanel, speedpanel, typopanel, keypanel, exlistbuttons, exlistpanel, exlistnorthpanel,
 			namemainpanel, namenorthpanel, namebuttonpanel, nametextpanel;
 
@@ -49,17 +51,15 @@ public class Frame extends JFrame {
 
 	JMenuBar bar;
 
-	JMenu filemenu, textexmenu, typomenu, optionmenu, colormenu;
+	JMenu filemenu, textexmenu, typomenu, optionmenu, colormenu, languagemenu;
 
-	JMenuItem randomitem, quititem, loadexitem, importexitem, typoexitem, typoviewitem, typoclearitem;
+	JMenuItem randomitem, quititem, loadexitem, importexitem, typoexitem, typoviewitem, typoclearitem, randomoptionitem;
 	
-	List<JCheckBoxMenuItem> coloritems;
+	List<JCheckBoxMenuItem> coloritems, languageitems;
 
 	JRadioButton letters, numbers, basicsigns, manysigns, umlauts, uppercases;
 
-	Color background, foreground;
-
-	JDialog typodialog, importdialog, textexdialog;
+	JDialog typodialog, importdialog, textexdialog, randomdialog;
 
 	JTextArea typoarea;
 	
@@ -74,6 +74,8 @@ public class Frame extends JFrame {
 	LanguageManager languagem;
 
 	TextManager textmanager;
+	
+	ColorManager colormanager;
 
 	JList<String> list;
 
@@ -88,7 +90,7 @@ public class Frame extends JFrame {
 		super("Typing Pro");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setBounds(500, 400, 950, 500);
-		Dimension framelimit = new Dimension(950, 450);
+		Dimension framelimit = new Dimension(780, 350);
 		setMinimumSize(framelimit);
 
 		// Panels werden erzeugt.
@@ -98,12 +100,8 @@ public class Frame extends JFrame {
 		textpanel = new JPanel();
 		progresspanel = new JPanel();
 		buttonpanel = new JPanel();
-		topwest = new JPanel();
 		topcenter = new JPanel();
 		topsouth = new JPanel();
-		topeast = new JPanel();
-		radio = new JPanel();
-		topwests = new JPanel();
 		timepanel = new JPanel();
 		speedpanel = new JPanel();
 		typopanel = new JPanel();
@@ -117,15 +115,8 @@ public class Frame extends JFrame {
 		mainpanel.add(toppanel);
 		mainpanel.add(textpanel);
 		toppanel.setLayout(new BorderLayout());
-		toppanel.add(topwest, BorderLayout.WEST);
 		toppanel.add(topcenter, BorderLayout.CENTER);
 		toppanel.add(topsouth, BorderLayout.SOUTH);
-		topwest.setLayout(new BorderLayout());
-		topwest.add(radio, BorderLayout.CENTER);
-		topwests.setLayout(new GridLayout(0, 2, 0, 0));
-		topwest.add(topwests, BorderLayout.SOUTH);
-		toppanel.add(topeast, BorderLayout.EAST);
-		radio.setLayout(new GridLayout(0, 1, 0, 0));
 		topcenter.setLayout(new GridLayout(0, 2, 5, 0));
 		topcenter.add(timepanel);
 		topcenter.add(speedpanel);
@@ -133,6 +124,7 @@ public class Frame extends JFrame {
 		topcenter.add(keypanel);
 		textpanel.setLayout(new BorderLayout());
 		textpanel.add(progresspanel, BorderLayout.NORTH);
+		
 
 		// Objekte anderer Klassen werden erzeugt und der Languagemanager registriert
 		// alle notwenigen Komponenten des Dialoges.
@@ -141,7 +133,7 @@ public class Frame extends JFrame {
 		KeyManager keymanager = new KeyManager(this, textmanager);
 		FileManager filemanager = new FileManager(this);
 		FileManager.Windowcloser closer = filemanager.windowcloser;
-		ColorManager colormanager = new ColorManager(this);
+		colormanager = new ColorManager(this);
 		addWindowListener(closer);
 
 		languagem = new LanguageManager(this);
@@ -156,8 +148,10 @@ public class Frame extends JFrame {
 
 		bar = new JMenuBar();
 		setJMenuBar(bar);
+		
+		// FileMenu
+		
 		filemenu = new JMenu();
-
 		filemenu.setOpaque(true);
 		filemenu.getPopupMenu().setBorder(null);
 		languagem.registerComponent(filemenu, "filemenu");
@@ -225,6 +219,8 @@ public class Frame extends JFrame {
 		});
 		filemenu.add(quititem);
 		
+		// OptionMenu
+		
 		optionmenu = new JMenu();
 		optionmenu.setOpaque(true);
 		optionmenu.getPopupMenu().setBorder(null);
@@ -257,54 +253,33 @@ public class Frame extends JFrame {
 		languagem.registerComponent(coloritems.get(7), "nightvisionitem");
 		languagem.registerComponent(coloritems.get(8), "kitchenitem");
 		languagem.registerComponent(coloritems.get(9), "ornamentalitem");
-	
+		
+		languagemenu = new JMenu();
+		languagemenu.setOpaque(true);
+		languagemenu.getPopupMenu().setBorder(null);
+		languagem.registerComponent(languagemenu, "languagemenu");
+		optionmenu.add(languagemenu);
+		
+		languageitems = new ArrayList<>();
+		
+		for (int j=0; j< 2;j++) {
+			int index =j;
+			languageitems.add(new JCheckBoxMenuItem());
+			languageitems.get(j).addActionListener(e -> {for (JCheckBoxMenuItem item : languageitems) 
+				if( item != languageitems.get(index))item.setSelected(false); languagem.setLang();});
+			languagemenu.add(languageitems.get(j));
+		}
+		
+		languagem.registerComponent(languageitems.get(0), "enitem");
+		languagem.registerComponent(languageitems.get(1), "deitem");
+		
+		randomoptionitem = new JMenuItem();
+		languagem.registerComponent(randomoptionitem, "randomoptionitem");
+		randomoptionitem.addActionListener(e -> randomdialog.setVisible(true));
+		optionmenu.add(randomoptionitem);
 		
 				
-		
-		// TopPanel West
-
-		// RadioButtons und Combobox werden erstellt und eingerichtet
-
-		Font radiof = new Font("Arial", Font.BOLD, 15);
-		letters = new JRadioButton();
-		languagem.registerComponent(letters, "lettersradio");
-		letters.setFont(radiof);
-		numbers = new JRadioButton();
-		languagem.registerComponent(numbers, "numbersradio");
-		numbers.setFont(radiof);
-		basicsigns = new JRadioButton();
-		languagem.registerComponent(basicsigns, "basicsignsradio");
-		basicsigns.setFont(radiof);
-		manysigns = new JRadioButton();
-		languagem.registerComponent(manysigns, "manysignsradio");
-		manysigns.setFont(radiof);
-		umlauts = new JRadioButton();
-		languagem.registerComponent(umlauts, "umlautsradio");
-		umlauts.setFont(radiof);
-		uppercases = new JRadioButton();
-		languagem.registerComponent(uppercases, "uppercasesradio");
-		uppercases.setFont(radiof);
 	
-		letters.setFocusable(false);
-		numbers.setFocusable(false);
-		basicsigns.setFocusable(false);
-		manysigns.setFocusable(false);
-		umlauts.setFocusable(false);
-		uppercases.setFocusable(false);
-
-		radio.add(letters);
-		radio.add(umlauts);
-		radio.add(basicsigns);
-		radio.add(manysigns);
-		radio.add(numbers);
-		radio.add(uppercases);
-
-		String[] lengthb = { "kurz", "mittel", "lang" };
-		lengthbox = new JComboBox<String>(lengthb);
-		languagem.registerComponent(lengthbox, "lengthbox");
-		lengthbox.setFocusable(false);
-		lengthbox.setSelectedIndex(0);
-		topwests.add(lengthbox);
 
 		// TopPanel Center
 
@@ -345,18 +320,6 @@ public class Frame extends JFrame {
 		keysleft.setFont(labelfont);
 		keypanel.add(keysleft);
 
-		// Language Panel
-
-		// Combobox wird erstellt und eingerichtet.
-
-		String[] langs = { "de", "en" };
-		languagebox = new JComboBox<>(langs);
-		languagem.registerComponent(languagebox, "languagebox");
-		languagebox.setFocusable(false);
-		languagebox.setSelectedIndex(0);
-		languagebox.addActionListener(e -> languagem.setlang());
-		topeast.add(languagebox);
-
 		// InfoPanel
 
 		// Label wird erstellt und eingerichtet.
@@ -387,13 +350,12 @@ public class Frame extends JFrame {
 		blink.setFont(new Font("Arial", Font.BOLD, 50));
 		textpanel.add(blink, BorderLayout.WEST);
 		textpanel.add(textlabel, BorderLayout.CENTER);
-		Thread blinker = new Blinker(this);
+		Blinker blinker = colormanager.new Blinker();
 		blinker.start();
 
 		// ButtonPanel
 
 		// Buttons werden erstellt und eingerichtet.
-
 
 		Font bfont = new Font("Arial", Font.BOLD, 18);
 		refresh = new JButton();
@@ -489,7 +451,7 @@ public class Frame extends JFrame {
 				namefield.setText("");
 			}
 		});
-		namefield.setFont(radiof);
+		namefield.setFont(new Font("Arial", Font.BOLD, 15));
 		nametextpanel.add(namefield, BorderLayout.CENTER);
 		choosename = new JButton();
 		choosename.setFont(bfont2);
@@ -565,11 +527,66 @@ public class Frame extends JFrame {
 
 		list = new JList<>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setBackground(background);
 		list.setFont(listfont);
 
 		exscroll = new JScrollPane(list);
 		exlistpanel.add(exscroll, BorderLayout.CENTER);
+		
+		// Dialog für die Auswahl der Zufallstexte wird erstellt und eingerichtet
+		
+		randomdialog = new JDialog();
+		randomdialog.setLocationRelativeTo(null);
+		randomdialog.setSize(350, 300);
+		randomdialog.setMinimumSize(new Dimension(320,300));
+		
+		radio = new JPanel();
+		radio.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		// RadioButtons und Combobox werden erstellt und eingerichtet
+
+				Font radiof = new Font("Arial", Font.BOLD, 15);
+				letters = new JRadioButton();
+				languagem.registerComponent(letters, "lettersradio");
+				letters.setFont(radiof);
+				numbers = new JRadioButton();
+				languagem.registerComponent(numbers, "numbersradio");
+				numbers.setFont(radiof);
+				basicsigns = new JRadioButton();
+				languagem.registerComponent(basicsigns, "basicsignsradio");
+				basicsigns.setFont(radiof);
+				manysigns = new JRadioButton();
+				languagem.registerComponent(manysigns, "manysignsradio");
+				manysigns.setFont(radiof);
+				umlauts = new JRadioButton();
+				languagem.registerComponent(umlauts, "umlautsradio");
+				umlauts.setFont(radiof);
+				uppercases = new JRadioButton();
+				languagem.registerComponent(uppercases, "uppercasesradio");
+				uppercases.setFont(radiof);
+			
+				letters.setFocusable(false);
+				numbers.setFocusable(false);
+				basicsigns.setFocusable(false);
+				manysigns.setFocusable(false);
+				umlauts.setFocusable(false);
+				uppercases.setFocusable(false);
+
+				radio.add(letters);
+				radio.add(umlauts);
+				radio.add(basicsigns);
+				radio.add(manysigns);
+				radio.add(numbers);
+				radio.add(uppercases);
+
+				String[] lengthb = { "kurz", "mittel", "lang" };
+				lengthbox = new JComboBox<String>(lengthb);
+				languagem.registerComponent(lengthbox, "lengthbox");
+				lengthbox.setFocusable(false);
+				lengthbox.setSelectedIndex(0);
+//				topwests.add(lengthbox);
+		
+		
+		
 
 		// TestButton
 
@@ -582,10 +599,15 @@ public class Frame extends JFrame {
 		colormanager.registerAllComponents();
 		filemanager.loadConfig();
 		colormanager.setColors();
-		languagem.setlang();
+		languagem.setLang();
 		setVisible(true);
+		randomdialog.setVisible(true);
 
 	}
+	
+	
+	
+	
 
 	/**
 	 * Dieses Label enthält selbst verschiedene JLabels, die im LanguageManager
@@ -618,6 +640,9 @@ public class Frame extends JFrame {
 			setInfotext(anykeytostart);
 			reminder = anykeytostart;
 		}
+		
+		
+		
 
 		/**
 		 * Diese Methode dient als Text-setter. Das Label reminder merkt sich den
@@ -670,6 +695,7 @@ public class Frame extends JFrame {
 		public abstract void prepareExcercise(TextManager textmanager, KeyManager keymanager, JLabel textlabel,
 				JLabel typolabel);
 	}
+	
 
 	public static void main(String[] args) {
 		new Frame();

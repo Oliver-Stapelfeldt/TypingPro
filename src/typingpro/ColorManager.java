@@ -59,6 +59,8 @@ public class ColorManager {
 			new Color(161, 31, 12), new Color(30, 30, 30), new Color(161, 31, 12)};
 
 	Color[][] colororder = { beach, apples, wood, deepsea, greek, mountain, sushi, nightvision, kitchen, ornamental };
+	
+	boolean flashrunning;
 
 	public ColorManager(Frame frame) {
 		this.frame = frame;
@@ -71,7 +73,7 @@ public class ColorManager {
 		this.background4 = colororder[getSelectedColorIndex()][3];
 		this.foreground = colororder[getSelectedColorIndex()][4];
 		this.foreground2 = colororder[getSelectedColorIndex()][5];
-		frame.background = background;
+		
 
 		updateColors();
 		updateBorders();
@@ -108,18 +110,20 @@ public class ColorManager {
 		frame.quititem.setBorder(menuborder);
 		frame.optionmenu.setBorder(menuborder);
 		frame.colormenu.setBorder(menuborder);
+		frame.randomoptionitem.setBorder(menuborder);
 
 		for (JCheckBoxMenuItem item : frame.coloritems)
+			item.setBorder(menuborder);
+		
+		for (JCheckBoxMenuItem item : frame.languageitems)
 			item.setBorder(menuborder);
 
 		// PanelBorder
 
 		frame.exlistpanel.setBorder(border);
-		frame.topwest.setBorder(border);
 		frame.topcenter.setBorder(border);
 		frame.textpanel.setBorder(border);
 		frame.topsouth.setBorder(border);
-		frame.topeast.setBorder(border);
 		frame.namemainpanel.setBorder(border);
 		frame.progress.setBorder(border);
 	}
@@ -221,6 +225,57 @@ public class ColorManager {
 		}
 
 	}
+	
+	class Blinker extends Thread {
+
+		public Blinker() {
+			
+		}
+		
+		
+		public void run(){
+			while (true) {
+				frame.blink.setForeground(foreground);
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				frame.blink.setForeground(background);
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Lässt den Übungstext für kurze Zeit die Farbe wechseln
+	 */
+
+	public void flash() {
+		if (!flashrunning) {
+			synchronized (this) {
+				flashrunning = true;
+				frame.textlabel.setForeground(new Color(255, 0, 0));
+				try {
+					Thread.sleep(150);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				frame.textlabel.setForeground(foreground);
+				flashrunning = false;
+			}
+		}
+	}
+	
 
 	public void registerAllComponents() {
 
@@ -231,12 +286,9 @@ public class ColorManager {
 		registerComponent(frame.textpanel, 1, 1);
 		registerComponent(frame.progresspanel, 1, 1);
 		registerComponent(frame.buttonpanel, 1, 4);
-		registerComponent(frame.topwest, 1, 2);
-		registerComponent(frame.topwests, 1, 2);
 		registerComponent(frame.topcenter, 1, 2);
 		registerComponent(frame.topsouth, 1, 2);
 		registerComponent(frame.speedpanel, 1, 2);
-		registerComponent(frame.topeast, 1, 2);
 		registerComponent(frame.radio, 1, 2);
 		registerComponent(frame.timepanel, 1, 2);
 		registerComponent(frame.typopanel, 1, 2);
@@ -297,6 +349,7 @@ public class ColorManager {
 		registerComponent(frame.typomenu, 1, 1);
 		registerComponent(frame.optionmenu, 1, 1);
 		registerComponent(frame.colormenu, 1, 1);
+		registerComponent(frame.languagemenu, 1, 1);
 
 		// MenuItems
 
@@ -307,8 +360,12 @@ public class ColorManager {
 		registerComponent(frame.typoexitem, 1, 1);
 		registerComponent(frame.typoviewitem, 1, 1);
 		registerComponent(frame.typoclearitem, 1, 1);
+		registerComponent(frame.randomoptionitem, 1, 1);
 
 		for (JCheckBoxMenuItem item : frame.coloritems)
+			registerComponent(item, 1, 1);
+		
+		for (JCheckBoxMenuItem item : frame.languageitems)
 			registerComponent(item, 1, 1);
 
 		// MenuBar

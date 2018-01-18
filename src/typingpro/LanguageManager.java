@@ -89,16 +89,26 @@ public class LanguageManager {
 	/**
 	 * Überprüft die Sprachauswahl und aktualisiert sämtliche Labels
 	 */
-	public synchronized void setlang() {
+	public synchronized void setLang() {
 		
-		int langindex = frame.languagebox.getSelectedIndex();
+		int langindex = getSelectedLanguageIndex();
 		switch(langindex) {
-		case 0: loc = Locale.GERMAN;break;
-		case 1: loc = Locale.ENGLISH;break;
+		case 0: loc = Locale.ENGLISH;break;
+		case 1: loc = Locale.GERMAN;break;
 		
 		}
 		bundle = ResourceBundle.getBundle("typingpro/LabelsBundle", loc);
 		update();
 		
 	}
+	
+	public int getSelectedLanguageIndex() {
+		int index = 0;
+		for (int i = 0; i < 2; i++) {
+			if (frame.languageitems.get(i).isSelected())
+				index = i;
+		}
+		return index;
+	}
+	
 }

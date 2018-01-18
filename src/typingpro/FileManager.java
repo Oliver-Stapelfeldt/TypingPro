@@ -64,12 +64,18 @@ public class FileManager {
 			printer.println("umlauts=" + frame.umlauts.isSelected());
 			printer.println("uppercases=" + frame.uppercases.isSelected());
 			printer.println("length=" + frame.lengthbox.getSelectedIndex());
-			printer.println("language=" + frame.languagebox.getSelectedIndex());
 			int selected = 0;
 			for (int i=0; i< frame.coloritems.size();i++)
 				if(frame.coloritems.get(i).isSelected())
 					selected = i;
 			printer.println("color=" + selected);
+			for (int i=0; i< frame.languageitems.size();i++)
+				if(frame.languageitems.get(i).isSelected())
+					selected = i;
+			printer.println("language=" + selected);
+			
+			
+			
 			printer.close();
 		} catch (Exception e) {
 		}
@@ -97,7 +103,7 @@ public class FileManager {
 				printer.println("umlauts=false");
 				printer.println("uppercases=false");
 				printer.println("length=1");
-				printer.println("language=1");
+				printer.println("language=0");
 				printer.println("color=0");
 				
 				printer.close();
@@ -121,9 +127,9 @@ public class FileManager {
 			frame.umlauts.setSelected(Boolean.parseBoolean(prop.getProperty("umlauts")));
 			frame.uppercases.setSelected(Boolean.parseBoolean(prop.getProperty("uppercases")));
 			frame.lengthbox.setSelectedIndex(Integer.parseInt(prop.getProperty("length")));
-			frame.languagebox.setSelectedIndex(Integer.parseInt(prop.getProperty("language")));
 			frame.coloritems.get(Integer.parseInt(prop.getProperty("color"))).setSelected(true);
-
+			frame.languageitems.get(Integer.parseInt(prop.getProperty("language"))).setSelected(true);
+			
 			} catch (Exception e) {
 			System.out.println("config.txt konnte nicht geladen werden.");
 		}
