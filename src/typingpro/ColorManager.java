@@ -29,10 +29,10 @@ public class ColorManager {
 	List<ColorComponent> colorcomponents = new ArrayList<ColorComponent>();
 
 	Color[] beach = { new Color(243, 205, 5), new Color(244, 159, 5), new Color(208, 112, 3), new Color(54, 104, 141),
-			new Color(30, 30, 30), new Color(54, 104, 141)};
+			new Color(30, 30, 30), new Color(54, 104, 141) };
 
-	Color[] ornamental = { new Color(216,213,131), new Color(217,172,42), new Color(118,63,2),
-			new Color(114,0,23), new Color(30, 30, 30), new Color(114,0,23)};
+	Color[] ornamental = { new Color(216, 213, 131), new Color(217, 172, 42), new Color(118, 63, 2),
+			new Color(114, 0, 23), new Color(30, 30, 30), new Color(114, 0, 23) };
 
 	Color[] sushi = { new Color(184, 210, 11), new Color(245, 108, 87), new Color(35, 27, 18), new Color(247, 118, 4),
 			new Color(30, 30, 30), new Color(245, 108, 87) };
@@ -49,17 +49,17 @@ public class ColorManager {
 	Color[] greek = { new Color(244, 234, 222), new Color(237, 140, 114), new Color(47, 73, 110),
 			new Color(41, 136, 188), new Color(30, 30, 30), new Color(41, 136, 188) };
 
-	Color[] nightvision = { new Color(34,38,41), new Color(34,38,41), new Color(97,137,47),
-			new Color(71,75,79), new Color(134,194,50), new Color(134,194,50) };
+	Color[] nightvision = { new Color(34, 38, 41), new Color(34, 38, 41), new Color(97, 137, 47), new Color(71, 75, 79),
+			new Color(134, 194, 50), new Color(134, 194, 50) };
 
 	Color[] kitchen = { new Color(253, 246, 246), new Color(179, 219, 192), new Color(254, 0, 0),
 			new Color(103, 186, 202), new Color(30, 30, 30), new Color(179, 219, 192) };
 
 	Color[] apples = { new Color(244, 236, 106), new Color(187, 207, 74), new Color(231, 63, 11),
-			new Color(161, 31, 12), new Color(30, 30, 30), new Color(161, 31, 12)};
+			new Color(161, 31, 12), new Color(30, 30, 30), new Color(161, 31, 12) };
 
 	Color[][] colororder = { beach, apples, wood, deepsea, greek, mountain, sushi, nightvision, kitchen, ornamental };
-	
+
 	boolean flashrunning;
 
 	public ColorManager(Frame frame) {
@@ -73,7 +73,6 @@ public class ColorManager {
 		this.background4 = colororder[getSelectedColorIndex()][3];
 		this.foreground = colororder[getSelectedColorIndex()][4];
 		this.foreground2 = colororder[getSelectedColorIndex()][5];
-		
 
 		updateColors();
 		updateBorders();
@@ -110,11 +109,12 @@ public class ColorManager {
 		frame.quititem.setBorder(menuborder);
 		frame.optionmenu.setBorder(menuborder);
 		frame.colormenu.setBorder(menuborder);
+		frame.languagemenu.setBorder(menuborder);
 		frame.randomoptionitem.setBorder(menuborder);
 
 		for (JCheckBoxMenuItem item : frame.coloritems)
 			item.setBorder(menuborder);
-		
+
 		for (JCheckBoxMenuItem item : frame.languageitems)
 			item.setBorder(menuborder);
 
@@ -126,6 +126,8 @@ public class ColorManager {
 		frame.topsouth.setBorder(border);
 		frame.namemainpanel.setBorder(border);
 		frame.progress.setBorder(border);
+		frame.randomoptionsmain.setBorder(border);
+		frame.sharedoptionsmain.setBorder(border);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -225,27 +227,26 @@ public class ColorManager {
 		}
 
 	}
-	
+
 	class Blinker extends Thread {
 
 		public Blinker() {
-			
+
 		}
-		
-		
-		public void run(){
+
+		public void run() {
 			while (true) {
 				frame.blink.setForeground(foreground);
-				
+
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				frame.blink.setForeground(background);
-				
+
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
@@ -255,7 +256,7 @@ public class ColorManager {
 			}
 		}
 	}
-	
+
 	/**
 	 * Lässt den Übungstext für kurze Zeit die Farbe wechseln
 	 */
@@ -275,7 +276,6 @@ public class ColorManager {
 			}
 		}
 	}
-	
 
 	public void registerAllComponents() {
 
@@ -289,7 +289,8 @@ public class ColorManager {
 		registerComponent(frame.topcenter, 1, 2);
 		registerComponent(frame.topsouth, 1, 2);
 		registerComponent(frame.speedpanel, 1, 2);
-		registerComponent(frame.radio, 1, 2);
+		registerComponent(frame.randomoptions, 1, 2);
+		registerComponent(frame.sharedoptions, 1, 2);
 		registerComponent(frame.timepanel, 1, 2);
 		registerComponent(frame.typopanel, 1, 2);
 		registerComponent(frame.keypanel, 1, 2);
@@ -300,6 +301,13 @@ public class ColorManager {
 		registerComponent(frame.namenorthpanel, 1, 2);
 		registerComponent(frame.namebuttonpanel, 1, 4);
 		registerComponent(frame.nametextpanel, 1, 2);
+		registerComponent(frame.optionsmain, 1, 2);
+		registerComponent(frame.optionsbuttons, 1, 4);
+		registerComponent(frame.randomoptionsmain, 1, 2);
+		registerComponent(frame.sharedoptionsmain, 1, 2);
+		registerComponent(frame.randomoptions, 1, 2);
+		registerComponent(frame.sharedoptions, 1, 2);
+		registerComponent(frame.optionslanguage, 1, 2);
 
 		// Labels
 
@@ -319,6 +327,8 @@ public class ColorManager {
 		registerComponent(frame.exdiatitle, 1, 1);
 		registerComponent(frame.exdialabel, 1, 1);
 		registerComponent(frame.infolabel, 1, 1);
+		registerComponent(frame.randomoptionlabel, 1, 2);
+		registerComponent(frame.sharedoptionlabel, 1, 2);
 
 		// Buttons
 
@@ -332,6 +342,8 @@ public class ColorManager {
 		registerComponent(frame.deleteex, 1, 1);
 		registerComponent(frame.choosename, 1, 1);
 		registerComponent(frame.cancelname, 1, 1);
+		registerComponent(frame.optionsok, 1, 1);
+		registerComponent(frame.optionscancel, 1, 1);
 
 		// RadioButtons
 
@@ -364,7 +376,7 @@ public class ColorManager {
 
 		for (JCheckBoxMenuItem item : frame.coloritems)
 			registerComponent(item, 1, 1);
-		
+
 		for (JCheckBoxMenuItem item : frame.languageitems)
 			registerComponent(item, 1, 1);
 
@@ -387,7 +399,6 @@ public class ColorManager {
 		// ComboBox
 
 		registerComponent(frame.lengthbox, 1, 1);
-		registerComponent(frame.languagebox, 1, 1);
 
 		// ProgressBar
 
