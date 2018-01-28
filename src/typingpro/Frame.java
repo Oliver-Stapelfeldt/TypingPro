@@ -44,7 +44,7 @@ public class Frame extends JFrame {
 	Infolabel infolabel;
 
 	JLabel typolabel, textlabel, blink, timelabel, time, keysleftlabel, keysleft, typoslabel, typos, speedlabel, speed,
-			speedunit, exdiatitle, exdialabel, enternamelabel, randomoptionlabel, sharedoptionlabel;
+			speedunit, exdiatitle, exdialabel, enternamelabel, randomoptionlabel, sharedoptionlabel, optiontitle;
 
 	JButton newtextexcercise, newtypo, refresh, newrandomtext, quit, loadex, cancelex, deleteex, choosename, cancelname, optionsok, optionscancel;
 
@@ -541,8 +541,11 @@ public class Frame extends JFrame {
 
 		randomdialog = new JDialog();
 		randomdialog.setLocationRelativeTo(null);
-		randomdialog.setSize(450, 280);
-		randomdialog.setMinimumSize(new Dimension(450, 200));
+		randomdialog.setSize(520, 240);
+		randomdialog.setMinimumSize(new Dimension(520, 200));
+		
+		optiontitle = new JLabel();
+		languagem.registerComponent(optiontitle, "optiontitle");
 		
 		optionsmain = new JPanel();
 		optionsmain.setLayout(new GridLayout(1,0,0,0));
@@ -634,10 +637,6 @@ public class Frame extends JFrame {
 		languagem.registerComponent(optionscancel, "optionscancel");
 		optionscancel.addActionListener(e -> {getReminder(); randomdialog.setVisible(false);});
 		optionsbuttons.add(optionscancel);
-		
-		
-		
-		
 
 		// TestButton
 

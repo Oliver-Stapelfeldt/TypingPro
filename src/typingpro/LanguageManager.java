@@ -79,6 +79,7 @@ public class LanguageManager {
 				frame.typoarea.setText(Typo.printtypos());
 			}
 			
+			frame.randomdialog.setTitle(frame.optiontitle.getText());
 			frame.typodialog.setTitle(Typo.dialogtitle.getText());
 			frame.textexdialog.setTitle(frame.exdiatitle.getText());
 			frame.infolabel.setInfotext(frame.infolabel.reminder);
